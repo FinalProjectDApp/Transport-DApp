@@ -27,7 +27,7 @@ class header extends Component {
     }
 }
 const mapStateToProps = (state) => {
-    return {
+    return { 
         user: state.user
     }
 }
