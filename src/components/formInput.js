@@ -1,6 +1,38 @@
 import React, { Component } from 'react';
+import { AccountData, ContractData, ContractForm } from 'drizzle-react-components'
 
 class home extends Component {
+    constructor(props, context) {
+        super(props)
+        this.state = {
+            category: '',
+            description: '',
+            bill: '',
+            total: '0'
+        }
+        // this.contracts = context.drizzle.contracts
+    }
+    componentDidMount = () =>{
+        console.log('ini contracts:', this.props)
+    }
+    handleForm = (form, val)=>{
+        if(form === 'bill') {
+            this.uploadBill(val)
+        } else {
+            this.setState({
+                [form]:val
+            })
+        }
+        console.log(this.state)
+    }
+
+    uploadBill=(val)=>{
+        console.log('upload image:', val)
+    }
+
+    submitForm=()=>{
+        this.props.addTransaction(this.state.category, this.state.description, this.state.bill, this.state.total)
+    }
     render() {
         return (
             <div className="ui container">
@@ -9,28 +41,30 @@ class home extends Component {
                         <h3>Input New Transaction</h3>
                     </div>
                     <div className="ui field">
-                        <label>Name of Transaction</label>
-                        <input type="text" />
-                    </div>
-                    <div className="ui field">
                         <label>Category</label>
-                        <select className="ui search dropdown">
-                            <option value="AF">Jajan</option>
-                            <option value="AX">Material</option>
-                            <option value="AL">Kuli</option>
+                        <select className="ui search dropdown" onChange={(e)=>this.handleForm('category', e.target.value)}>
+                            <option value="Food & Beverage">Food & Beverage</option>
+                            <option value="Transportation">Transportation</option>
+                            <option value="Accomodation">Accomodation</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Misc.">Misc.</option>
                         </select>
                     </div>
                     <div className="ui field">
-                        <label>Bukti</label>
-                        <input type="text" />
+                        <label>Description</label>
+                        <textarea onChange={(e)=>this.handleForm('description', e.target.value)}></textarea>
                     </div>
                     <div className="ui field">
-                        <label>Total Money</label>
-                        <input type="text" />
+                        <label>Bill / Invoice</label>
+                        <input type="file" onChange={(e)=>this.handleForm('bill', e.target.value)}/>
+                    </div>
+                    <div className="ui field">
+                        <label>Total Expense</label>
+                        <input type="number" onChange={(e)=>this.handleForm('total', e.target.value)}/>
                     </div>
                     <div className="actions">
-                        <div className="ui grey button" >Save</div>
-                        <div className="ui grey button" >Cancel</div>
+                        <div className="ui blue button" onClick={this.submitForm} >Save</div>
+                        <div className="ui red button" >Cancel</div>
                     </div>
                 </div>
             </div>
