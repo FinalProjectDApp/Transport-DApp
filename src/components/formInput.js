@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { AccountData, ContractData, ContractForm } from 'drizzle-react-components'
+import { storageRef } from '../firebase'
 
 class home extends Component {
     constructor(props, context) {
@@ -8,7 +9,8 @@ class home extends Component {
             category: '',
             description: '',
             bill: '',
-            total: '0'
+            total: '0',
+            urlImage: ''
         }
         // this.contracts = context.drizzle.contracts
     }
@@ -26,8 +28,22 @@ class home extends Component {
         console.log(this.state)
     }
 
-    uploadBill=(val)=>{
-        console.log('upload image:', val)
+    uploadBill=(file)=>{
+        var uploadTask = storageRef.child('images/' + file.name).put(file)
+        uploadTask.on('state_changed', (snapshot) => {
+            var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log('Upload is ' + progress + '% done');
+        }, (error) => {
+                console.log(error);
+        }, () => {
+            uploadTask.snapshot.ref.getDownloadURL()
+            .then((downloadURL) => {
+                console.log('File available at', downloadURL);
+                this.setState({
+                    urlImage: downloadURL
+                })
+            });
+        });
     }
 
     submitForm=()=>{
@@ -56,7 +72,7 @@ class home extends Component {
                     </div>
                     <div className="ui field">
                         <label>Bill / Invoice</label>
-                        <input type="file" onChange={(e)=>this.handleForm('bill', e.target.value)}/>
+                        <input type="file" onChange={(e)=>this.handleForm('bill', e.target.files[0])}/>
                     </div>
                     <div className="ui field">
                         <label>Total Expense</label>
