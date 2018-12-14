@@ -16,7 +16,7 @@ export const isLogin = () => {
                 // var isAnonymous = user.isAnonymous;
                 // var providerData = user.providerData;
                 dispatch({ type: 'LOGIN_SUCCESS', payload: {email: email, uid: uid, name: name}})
-                history.push('/home')
+                // history.push('/home')
             } else {
                 dispatch({ type: 'LOGOUT' })
                 history.push('/login')
