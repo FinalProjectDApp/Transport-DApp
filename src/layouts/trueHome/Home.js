@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
-import { AccountData, ContractData, ContractForm } from 'drizzle-react-components'
-import logo from '../../logo.png'
-
+import { connect } from 'react-redux'
 import Navbar from '../../components/navbar'
 import FormInput from '../../components/formInput'
 import TableTrx from '../../components/tableTrx'
+import Header from '../../components/header'
+import firebase from '../../firebase'
+
 
 import Web3 from 'web3'
 import TruffleContract from 'truffle-contract'
@@ -19,6 +20,7 @@ class Home extends Component {
       hasVoted: false,
       loading: true,
       voting: false,
+      email: ''
     }
     // this.web3 = new Web3(Web3.givenProvider || "ws://localhost:7545");
     if (typeof web3 == 'undefined') {
@@ -34,6 +36,15 @@ class Home extends Component {
 
     this.castVote = this.castVote.bind(this)
     this.watchEvents = this.watchEvents.bind(this)
+  }
+
+  cekLogin = () => {
+    firebase.auth().onAuthStateChanged((user) => {
+      this.setState({
+        email: user.email
+      })
+      // console.log(user);
+  });
   }
 
   componentDidMount = () => {
@@ -64,6 +75,7 @@ class Home extends Component {
         console.log(err)
       })
     })
+    
   }
 
   watchEvents() {
@@ -100,6 +112,7 @@ class Home extends Component {
   render() {
     return (
       <div>
+        <Header></Header>
         <Navbar></Navbar>
         <main className="container">
           <div>
@@ -179,4 +192,10 @@ class Home extends Component {
   }
 }
 
-export default Home
+const mapStateToProps = (state) => {
+  return {
+    
+  }
+}
+
+export default connect(mapStateToProps, null)(Home);
