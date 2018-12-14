@@ -6,7 +6,7 @@ import { logout } from '../store/actions/auth'
 class navbar extends Component {
     render() {
         return (
-            <div className="ui container" style={{ marginBottom: 20 }}>
+            <div className="ui container" style={{ margin: '0 auto' }}>
                 <div className="ui menu">
                 <a className="item">Browse</a>
                 <a className="item">Submit</a>

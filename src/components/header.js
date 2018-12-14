@@ -7,19 +7,19 @@ import { isLogin } from '../store/actions/auth'
 let headerStyle = {
     width: '100%',
     padding: 20,
-    height: 100
+    height: 100,
+    textAlign: 'center',
+    paddingTop: 30
 }
 
 class header extends Component {
-    componentDidMount(){
+    componentDidMount() {
         this.props.isLogin()
     }
     render() {
         return (
-            <div className="ui container">
-                <div className="ui" style={ headerStyle } >
-                    <h1> BLockChain ++</h1>
-                </div>
+            <div className="ui" style={headerStyle} >
+                <h1> BLockChain ++</h1>
             </div>
         );
     }
