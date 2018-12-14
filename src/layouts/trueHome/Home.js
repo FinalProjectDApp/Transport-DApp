@@ -52,7 +52,7 @@ class Home extends Component {
         let arr = [];
         for (let i = 0; i <= totalTransaction; i++) {
           this.expenseInstance.transactions(i).then(function(transaction) {
-            let owner = transaction[5]
+            let owner = transaction[6]
             console.log('trx:',transaction,' cek user--:', user, '===', owner, user===owner)
               if(user === owner) {
                 arr.push(transaction)
@@ -76,12 +76,12 @@ class Home extends Component {
     })
   }
 
-  addTransaction = (category, description, imageBill, total)=> {
-    this.web3.eth.defaultAccount=this.web3.eth.accounts[0]
-    console.log(this.web3.eth.defaultAccount)
+  addTransaction = (category, description, imageBill, total, status)=> {
+    // this.web3.eth.defaultAccount=this.web3.eth.accounts[0]
+    // console.log(this.web3.eth.defaultAccount)
     console.log('masuk submit..')
     if (!imageBill) imageBill = 'http://militan.co.id/wp-content/uploads/2017/08/Screenshot_93.png';
-      this.expenseInstance.addTransaction(category, description, imageBill, Number(total))
+      this.expenseInstance.addTransaction(category, description, imageBill, Number(total), status, { from: this.state.account })
       .then((result)=> {
         // this.watchEvents()
         console.log('success add new transaction', result)
