@@ -21,7 +21,7 @@ class Home extends Component {
       voting: false,
     }
     // this.web3 = new Web3(Web3.givenProvider || "ws://localhost:7545");
-    if ( typeof web3 == 'undefined') {
+    if (typeof web3 == 'undefined') {
       this.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545')
     } else {
       this.web3Provider = Web3.givenProvider
@@ -36,7 +36,7 @@ class Home extends Component {
     this.watchEvents = this.watchEvents.bind(this)
   }
 
-  componentDidMount=()=> {
+  componentDidMount = () => {
     // TODO: Refactor with promise chain
     this.web3.eth.getCoinbase((err, account) => {
       this.setState({ account })
@@ -45,22 +45,22 @@ class Home extends Component {
         this.watchEvents()
 
         return this.expenseInstance.totalTransactions()
-      }).then( async (totalTransaction)=> {
-      
-        return {user: await this.expenseInstance.owner(), totalTransaction: totalTransaction}
-      }).then(({user, totalTransaction})=> {
+      }).then(async (totalTransaction) => {
+
+        return { user: await this.expenseInstance.owner(), totalTransaction: totalTransaction }
+      }).then(({ user, totalTransaction }) => {
         let arr = [];
         for (let i = 0; i <= totalTransaction; i++) {
-          this.expenseInstance.transactions(i).then(function(transaction) {
+          this.expenseInstance.transactions(i).then(function (transaction) {
             let owner = transaction[6]
-            console.log('trx:',transaction,' cek user--:', user, '===', owner, user===owner)
-              if(user === owner) {
-                arr.push(transaction)
-              }
+            console.log('trx:', transaction, ' cek user--:', user, '===', owner, user === owner)
+            if (user === owner) {
+              arr.push(transaction)
+            }
           });
         }
-        this.setState({transactions: arr})
-      }).catch(err=>{
+        this.setState({ transactions: arr })
+      }).catch(err => {
         console.log(err)
       })
     })
@@ -76,16 +76,16 @@ class Home extends Component {
     })
   }
 
-  addTransaction = (category, description, imageBill, total, status)=> {
+  addTransaction = (category, description, imageBill, total, status) => {
     // this.web3.eth.defaultAccount=this.web3.eth.accounts[0]
     // console.log(this.web3.eth.defaultAccount)
     console.log('masuk submit..')
     if (!imageBill) imageBill = 'http://militan.co.id/wp-content/uploads/2017/08/Screenshot_93.png';
-      this.expenseInstance.addTransaction(category, description, imageBill, Number(total), status, { from: this.state.account })
-      .then((result)=> {
+    this.expenseInstance.addTransaction(category, description, imageBill, Number(total), status, { from: this.state.account })
+      .then((result) => {
         // this.watchEvents()
         console.log('success add new transaction', result)
-      }).catch(function(err) {
+      }).catch(function (err) {
         console.error(err);
       });
   }
@@ -99,30 +99,35 @@ class Home extends Component {
 
   render() {
     return (
-      <main className="container">
-         <div>
-            <Navbar></Navbar>
-            <div className="ui container" >
-                <div >
-                    <h2 style={{backgroundColor: 'gray', width: 100, padding: 10}} >Groups</h2>
-                    <div className="ui gray button"> Create Group</div>
-                </div>
+      <div>
+        <Navbar></Navbar>
+        <main className="container">
+          <div>
+            <div className="ui centered card" >
+              <div class="content">
+                <div class="header">Groups</div>
+              </div>
+              <div class="content">
+              </div>
+              <div class="extra content">
+                <button class="ui button">Create Group</button>
+              </div>
             </div>
-            <FormInput 
+            <FormInput
               account={this.state.account}
               transactions={this.state.transactions}
               hasVoted={this.state.hasVoted}
               castVote={this.castVote}
               addTransaction={this.addTransaction}></FormInput>
-            <TableTrx 
+            <TableTrx
               account={this.state.account}
               transactions={this.state.transactions}
               hasVoted={this.state.hasVoted}
               castVote={this.castVote}
-              ></TableTrx>
-        </div>
-      {/* =============================================================================================================== */}
-        {/* <div className="pure-g">
+            ></TableTrx>
+          </div>
+          {/* =============================================================================================================== */}
+          {/* <div className="pure-g">
           <div className="pure-u-1-1 header">
             <img src={logo} alt="drizzle-logo" />
             <h1>Drizzle Examples</h1>
@@ -168,7 +173,8 @@ class Home extends Component {
             <br/><br/>
           </div>
         </div> */}
-      </main>
+        </main>
+      </div>
     )
   }
 }
