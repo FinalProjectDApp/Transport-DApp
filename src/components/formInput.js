@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { AccountData, ContractData, ContractForm } from 'drizzle-react-components'
 import { storageRef } from '../firebase'
+import axios from 'axios'
 
 class home extends Component {
     constructor(props, context) {
@@ -10,7 +11,7 @@ class home extends Component {
             description: '',
             bill: '',
             total: '0',
-            urlImage: ''
+            status: ''
         }
         // this.contracts = context.drizzle.contracts
     }
@@ -40,14 +41,57 @@ class home extends Component {
             .then((downloadURL) => {
                 console.log('File available at', downloadURL);
                 this.setState({
-                    urlImage: downloadURL
+                    bill: downloadURL
                 })
+                this.checkBill(downloadURL)
             });
         });
     }
 
+    checkBill=(image)=>{
+
+        axios.post(`https://vision.googleapis.com/v1/images:annotate?key=AIzaSyCyU2L9n0NxjunT1bfAH8-ruvVAJCJlBjw`, {
+            "requests": [
+            {
+                'image': {
+                'source': {
+                    'imageUri': image
+                }
+                },
+                'features': [
+                {
+                    'type': 'TEXT_DETECTION'
+                }
+                ]
+            }
+            ]
+        })
+        .then((result) => {
+            let input = Number(this.state.total)
+            let text = result.data.responses[0].fullTextAnnotation.text
+            let arr = text.split('\n')
+            let newArr=[]
+            var numberPattern = /\d+/g;
+            arr.forEach(el => {
+            let newEl = el.match(numberPattern)
+            if(newEl) {
+                newArr.push(Number(newEl.join('')))
+            }
+            });
+            console.log(arr, 'new Arr:', newArr, input)
+            console.log('Result:', newArr.indexOf(input) !== -1)
+            if(newArr.indexOf(input) !== -1) {
+                this.setState({status: 'OK'})
+            } else {
+                this.setState({status: 'Different'})
+            }
+        }).catch((err) => {
+            console.log(err)
+        });
+    }
+
     submitForm=()=>{
-        this.props.addTransaction(this.state.category, this.state.description, this.state.bill, this.state.total)
+        this.props.addTransaction(this.state.category, this.state.description, this.state.bill, this.state.total, this.state.status)
     }
     render() {
         return (
@@ -71,12 +115,12 @@ class home extends Component {
                         <textarea onChange={(e)=>this.handleForm('description', e.target.value)}></textarea>
                     </div>
                     <div className="ui field">
-                        <label>Bill / Invoice</label>
-                        <input type="file" onChange={(e)=>this.handleForm('bill', e.target.files[0])}/>
-                    </div>
-                    <div className="ui field">
                         <label>Total Expense</label>
                         <input type="number" onChange={(e)=>this.handleForm('total', e.target.value)}/>
+                    </div>
+                    <div className="ui field">
+                        <label>Bill / Invoice</label>
+                        <input type="file" onChange={(e)=>this.handleForm('bill', e.target.files[0])}/>
                     </div>
                     <div className="actions">
                         <div className="ui blue button" onClick={this.submitForm} >Save</div>
