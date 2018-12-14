@@ -2,13 +2,19 @@ import React, { Component } from 'react';
 import { Redirect, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-import Home from './containers/home'
+import Home from '../src/layouts/trueHome/HomeContainer'
+import { isLogin } from '../src/store/actions/auth'
+
 
 class PrivateRouter extends Component {
+    componentDidMount(){
+        this.props.isLogin()
+    }
+    
     render() {
         if(this.props.uid){
             return (
-               <Route exact path="/home" component={Home}></Route>
+               <Route exact path="/" component={Home}></Route>
             )
         } else {
             return (
@@ -26,7 +32,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-
+        isLogin: () => dispatch(isLogin()),
     }
 }
 

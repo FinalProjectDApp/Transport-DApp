@@ -2,7 +2,7 @@ let defaultState = {
     loading: false,
     error: false,
     errorMsg: '',
-    uid: '1',
+    uid: '',
     name: '',
     email: ''
 }
