@@ -11,10 +11,17 @@ class table extends Component {
     }
 
     handleClickImage=(i) =>{
-        this.setState({
-            showImage: true,
-            index: i
-        })
+        if(this.state.showImage) {
+            this.setState({
+                showImage: false,
+                index: 0
+            })
+        } else {
+            this.setState({
+                showImage: true,
+                index: i
+            })
+        }
     }
     render() {
         return (
@@ -34,11 +41,11 @@ class table extends Component {
                         {this.props.transactions.map((el, i)=>{
                             return (
                                 <tr key={i}>
-                                    <td>{el[0].c[0]}</td>
+                                    <td>{i+1}</td>
                                     <td>{el[1]}</td>
                                     <td>{el[2]}</td>
-                                    <td><span onClick={()=>this.handleClickImage(i) }>Bill Image</span>
-                                        {this.state.showImage && i == this.state.index && <img src={el[3]} />}
+                                    <td><span onClick={()=>this.handleClickImage(i) } style={{color: 'blue', cursor:'pointer'}}>Show/Hide</span><br/>
+                                        {this.state.showImage && i == this.state.index && <img src={el[3]} style={{height:'300px', width:'200px'}} />}
                                     </td>
                                     <td>{el[4].c[0]}</td>
                                     <td>{el[5]}</td>
@@ -51,5 +58,6 @@ class table extends Component {
         );
     }
 }
+
 
 export default table;

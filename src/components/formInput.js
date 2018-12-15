@@ -11,7 +11,9 @@ class home extends Component {
             description: '',
             bill: '',
             total: '0',
-            status: ''
+            status: '',
+            loading: false,
+            message: ''
         }
         // this.contracts = context.drizzle.contracts
     }
@@ -20,7 +22,9 @@ class home extends Component {
     }
     handleForm = (form, val)=>{
         if(form === 'bill') {
-            this.uploadBill(val)
+            this.setState({loading: true}, ()=>{
+                this.uploadBill(val)
+            })
         } else {
             this.setState({
                 [form]:val
@@ -49,7 +53,7 @@ class home extends Component {
     }
 
     checkBill=(image)=>{
-
+        console.log('this.state.loading', this.state.loading)
         axios.post(`https://vision.googleapis.com/v1/images:annotate?key=AIzaSyCyU2L9n0NxjunT1bfAH8-ruvVAJCJlBjw`, {
             "requests": [
             {
@@ -81,17 +85,30 @@ class home extends Component {
             console.log(arr, 'new Arr:', newArr, input)
             console.log('Result:', newArr.indexOf(input) !== -1)
             if(newArr.indexOf(input) !== -1) {
-                this.setState({status: 'OK'})
+                this.setState({status: 'OK', message: 'Upload Bill Success..'})
             } else {
-                this.setState({status: 'Different'})
+                this.setState({status: 'Different', message: 'We found there is difference between the total you input and the total in the bill. Please make adjustment by creating new transaction with category adjustment!'})
             }
+            this.setState({loading: false})
         }).catch((err) => {
             console.log(err)
+            this.setState({loading: false})
         });
     }
 
     submitForm=()=>{
         this.props.addTransaction(this.state.category, this.state.description, this.state.bill, this.state.total, this.state.status)
+    }
+    clearForm=()=>{
+        this.setState({
+            category: '',
+            description: '',
+            bill: '',
+            total: '0',
+            status: '',
+            loading: false,
+            message: ''
+        })
     }
     render() {
         return (
@@ -103,33 +120,46 @@ class home extends Component {
                     <div className="ui field">
                         <label>Category</label>
                         <select className="ui search dropdown" onChange={(e)=>this.handleForm('category', e.target.value)}>
-                            <option value="Food & Beverage">Food & Beverage</option>
+                            <option value="Food & Beverage" selected>Food & Beverage</option>
                             <option value="Transportation">Transportation</option>
                             <option value="Accomodation">Accomodation</option>
                             <option value="Entertainment">Entertainment</option>
                             <option value="Misc.">Misc.</option>
+                            <option value="Adjustment" style={{color:'maroon'}}>Adjustment</option>
                         </select>
                     </div>
                     <div className="ui field">
                         <label>Description</label>
-                        <textarea onChange={(e)=>this.handleForm('description', e.target.value)}></textarea>
+                        <textarea 
+                            onChange={(e)=>this.handleForm('description', e.target.value)}
+                            value={this.state.description}></textarea>
                     </div>
                     <div className="ui field">
                         <label>Total Expense</label>
-                        <input type="number" onChange={(e)=>this.handleForm('total', e.target.value)}/>
+                        <input type="number" 
+                            onChange={(e)=>this.handleForm('total', e.target.value)}
+                            value={this.state.total}/>
                     </div>
                     <div className="ui field">
                         <label>Bill / Invoice</label>
                         <input type="file" onChange={(e)=>this.handleForm('bill', e.target.files[0])}/>
                     </div>
                     <div className="actions">
-                        <div className="ui blue button" onClick={this.submitForm} >Save</div>
-                        <div className="ui red button" >Cancel</div>
+                        {this.state.loading && <div className="ui segment">
+                            <div className="ui active inverted dimmer">
+                                <div className="ui text loader">Uploading File..</div>
+                            </div>
+                            <p>Uploading File..</p>
+                        </div>}
+                        {!this.state.loading && <div className="ui blue button" onClick={this.submitForm} >Save</div>}
+                        <div className="ui red button" onClick={this.clearForm}>Cancel</div>
                     </div>
                 </div>
             </div>
         );
     }
 }
+
+
 
 export default home;

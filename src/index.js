@@ -11,7 +11,8 @@ import historyy from '../src/history'
 // Layouts
 import App from './App'
 import { LoadingContainer } from 'drizzle-react-components'
-import HomeContainer from './layouts/trueHome/HomeContainer'
+import Home from './layouts/trueHome/Home'
+import HomeBoss from './layouts/trueHome/HomeBoss'
 
 import Header from '../src/components/header'
 import login from '../src/containers/login'
@@ -28,8 +29,9 @@ ReactDOM.render((
           <Router historyy={historyy} history={history} drizzle={drizzle}>
             <Switch>
               {/* <Header></Header> */}
-              <PrivateRoute exact path="/" component={HomeContainer} />
+              <PrivateRoute exact path="/" component={Home} />
               <Route exact path="/login" component={login} />
+              <Route exact path="/one" component={HomeBoss} />
             </Switch>
           </Router>
         </Provider>

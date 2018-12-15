@@ -16,6 +16,7 @@ class Home extends Component {
     super(props)
     this.state = {
       account: '0x0',
+      subordinates: [],
       transactions: [],
       hasVoted: false,
       loading: true,
@@ -53,7 +54,7 @@ class Home extends Component {
     this.getTransactions()
   }
 
-  getTransactions=()=>{
+  getTransactions=(ownerSelected)=>{
     this.web3.eth.getCoinbase((err, account) => {
       this.setState({ account })
       this.expense.deployed().then((instance) => {
@@ -66,16 +67,18 @@ class Home extends Component {
         return { user: await this.expenseInstance.owner(), totalTransaction: totalTransaction }
       }).then(({ user, totalTransaction }) => {
         let arr = [];
+        let arrSubordinates = [];
         for (let i = 0; i <= totalTransaction; i++) {
           this.expenseInstance.transactions(i).then( (transaction)=> {
             let owner = transaction[6]
+            arrSubordinates.push(owner)
             console.log('trx:', transaction, ' cek user--:', user, '===', owner, user === owner)
-            if (this.state.email === owner) {
+            if (ownerSelected === owner) {
               arr.push(transaction)
             }
           });
         }
-        this.setState({ transactions: arr })
+        this.setState({ transactions: arr, subordinates: arrSubordinates })
       }).catch(err => {
         console.log(err)
       })
@@ -116,6 +119,12 @@ class Home extends Component {
     )
   }
 
+  handleForm=(val)=>{
+    if(val != 'Choose one') {
+      this.getTransactions(val)
+    }
+  }
+
   render() {
     return (
       <div>
@@ -123,22 +132,19 @@ class Home extends Component {
         <Navbar></Navbar>
         <main className="container">
           <div>
-            <div className="ui centered card" >
-              <div class="content">
-                <div class="header">Groups</div>
-              </div>
-              <div class="content">
-              </div>
-              <div class="extra content">
-                <button class="ui button">Create Group</button>
+            <div className='ui segment'>
+              <div className="ui field">
+                <label>Select your subordinate</label>
+                <select className="ui search dropdown" onChange={(e)=>this.handleForm(e.target.value)}>
+                    <option value="Choose one">Choose one</option>
+                    {this.state.subordinates.map((el, i)=>{
+                      return (
+                        <option value={el} key={i}>{el}</option>
+                      )
+                    })}
+                </select>
               </div>
             </div>
-            <FormInput
-              account={this.state.account}
-              transactions={this.state.transactions}
-              hasVoted={this.state.hasVoted}
-              castVote={this.castVote}
-              addTransaction={this.addTransaction}></FormInput>
             <TableTrx
               account={this.state.account}
               transactions={this.state.transactions}
