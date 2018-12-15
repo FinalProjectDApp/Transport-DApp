@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Navbar from '../../components/navbar'
-import FormInput from '../../components/formInput'
+import { Pie } from 'react-chartjs'
 import TableTrx from '../../components/tableTrx'
 import Header from '../../components/header'
 import firebase from '../../firebase'
-
 
 import Web3 from 'web3'
 import TruffleContract from 'truffle-contract'
@@ -21,7 +20,9 @@ class Home extends Component {
       hasVoted: false,
       loading: true,
       voting: false,
-      email: ''
+      choosed: false,
+      email: '',
+      chartData: []
     }
     // this.web3 = new Web3(Web3.givenProvider || "ws://localhost:7545");
     if (typeof web3 == 'undefined') {
@@ -67,18 +68,62 @@ class Home extends Component {
         return { user: await this.expenseInstance.owner(), totalTransaction: totalTransaction }
       }).then(({ user, totalTransaction }) => {
         let arr = [];
+        let chartData = [];
         let arrSubordinates = [];
         for (let i = 0; i <= totalTransaction; i++) {
           this.expenseInstance.transactions(i).then( (transaction)=> {
             let owner = transaction[6]
-            arrSubordinates.push(owner)
+            if (!arrSubordinates.includes(owner)) arrSubordinates.push(owner)
             console.log('trx:', transaction, ' cek user--:', user, '===', owner, user === owner)
             if (ownerSelected === owner) {
               arr.push(transaction)
+              let obj = {};
+              switch (transaction[1]) {
+                case 'Food & Beverage':
+                  obj = {
+                    color:"#F7464A",
+                    highlight: "#FF5A5E"
+                  }
+                  break;
+                case 'Transportation':
+                  obj = {
+                    color: "#46BFBD",
+                    highlight: "#5AD3D1"
+                  }
+                  break;
+                case 'Accomodation':
+                  obj = {
+                    color: "#33cc33",
+                    highlight: "#2eb82e"
+                  }
+                  break;
+                case 'Entertainment':
+                  obj = {
+                    color: "#eeee00",
+                    highlight: "#bbbb00"
+                  }
+                  break;
+                case 'Misc.':
+                  obj = {
+                    color: "#333333",
+                    highlight: "#111111"
+                  }
+                  break;
+              }
+              let index = chartData.findIndex(each => each.label === transaction[1])
+              if (index !== -1) {
+                chartData[index].value += transaction[4].c[0]
+              } else {
+                chartData.push({
+                  value: transaction[4].c[0],
+                  label: transaction[1],
+                  ...obj
+                })
+              }
             }
           });
         }
-        this.setState({ transactions: arr, subordinates: arrSubordinates })
+        this.setState({ transactions: arr, subordinates: arrSubordinates, chartData })
       }).catch(err => {
         console.log(err)
       })
@@ -122,6 +167,7 @@ class Home extends Component {
   handleForm=(val)=>{
     if(val != 'Choose one') {
       this.getTransactions(val)
+      this.setState({choosed: true})
     }
   }
 
@@ -130,11 +176,11 @@ class Home extends Component {
       <div>
         <Header></Header>
         <Navbar></Navbar>
-        <main className="container">
+        <main className="container" style={{marginTop: 10}}>
           <div>
             <div className='ui segment'>
               <div className="ui field">
-                <label>Select your subordinate</label>
+                <label>Select your subordinate </label>
                 <select className="ui search dropdown" onChange={(e)=>this.handleForm(e.target.value)}>
                     <option value="Choose one">Choose one</option>
                     {this.state.subordinates.map((el, i)=>{
@@ -145,6 +191,19 @@ class Home extends Component {
                 </select>
               </div>
             </div>
+            {/* React-Chart JS */}
+            {
+              this.state.choosed && 
+              <div style={{display: 'flex', flexDirection: "column", justifyContent: 'center', alignItems: 'center', padding: 10}}>
+              <Pie data={this.state.chartData} width="600" height="250" />
+              <h3>Category</h3>
+              {this.state.chartData.map(each => (
+                <ul>
+                  <li style={{color: each.color}}>{each.label}</li>
+                </ul>
+              ))}
+              </div>
+            }
             <TableTrx
               account={this.state.account}
               transactions={this.state.transactions}

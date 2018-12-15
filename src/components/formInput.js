@@ -119,8 +119,9 @@ class home extends Component {
                     </div>
                     <div className="ui field">
                         <label>Category</label>
-                        <select className="ui search dropdown" onChange={(e)=>this.handleForm('category', e.target.value)}>
-                            <option value="Food & Beverage" selected>Food & Beverage</option>
+                        <select className="ui search dropdown" onChange={(e)=>this.handleForm('category', e.target.value)} required={true}>
+                            <option>-- Select a Category --</option>
+                            <option value="Food & Beverage">Food & Beverage</option>
                             <option value="Transportation">Transportation</option>
                             <option value="Accomodation">Accomodation</option>
                             <option value="Entertainment">Entertainment</option>
