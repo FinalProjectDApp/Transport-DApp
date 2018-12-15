@@ -9,6 +9,7 @@ contract Expense {
         string bill;
         uint total;
         string status;
+        string email;
         address user;
     }
 
@@ -25,10 +26,7 @@ contract Expense {
     mapping(address => uint) public userAddress;
 
     constructor() public {
-        totalTransactions = 1;
-        transaction memory newTransaction = transaction(1, "test", "diskeripsi",  "", 10000, "OK", msg.sender);
-        transactions.push(newTransaction);
-        owner = msg.sender;
+        totalTransactions = 0;
     }
 
     event transactionEvent(string _category, string _description, string  _bill, uint _total);
@@ -48,11 +46,11 @@ contract Expense {
         transactions[i].bill, transactions[i].total, transactions[i].user );
     }
 
-    function addTransaction (string memory _category, string memory _description, string memory _bill, uint _total, string memory _status) 
+    function addTransaction (string memory _category, string memory _description, string memory _bill, uint _total, string memory _status, string memory _email) 
     public {
         totalTransactions ++;
         owner = msg.sender;
-        transaction memory newTransaction = transaction(totalTransactions,_category, _description,  _bill, _total, _status, owner);
+        transaction memory newTransaction = transaction(totalTransactions,_category, _description,  _bill, _total, _status, _email, owner);
         transactions.push(newTransaction);
         // emit event
         emit votedEvent(_total);
