@@ -121,7 +121,7 @@ class Home extends Component {
       <div>
         <Header></Header>
         <Navbar></Navbar>
-        <main className="container">
+        <main className="container" style={{marginTop: 10}}>
           <div>
             <div className="ui centered card" >
               <div class="content">
