@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
+import { Redirect } from 'react-router-dom'
+
 
 import { login, Glogin } from '../store/actions/auth'
 
@@ -26,34 +28,45 @@ class Login extends Component {
     }
 
     render() {
-        return (
-            <div className="ui container">
-                <div className="ui grid centered">
-                    <div className="ui five wide column">
-                        <div className="ui form">
-                            <div className="ui field">
-                                <input type="email" placeholder="Email" value={this.state.email} onChange={this.emailHandler} />
-                            </div>
-                            <div className="ui field">
-                                <input type="password" placeholder="Password" value={this.state.password} onChange={this.passwordHandler} />
-                            </div>
-                            <div className="ui field center">
-                                <center>
-                                    <button className="ui button centered" onClick={ this.props.GLogin }> Login with Google</button>
-                                    <button className="ui button centered" onClick={this.loginHandler} > Login</button>
-                                </center>
+        if(this.props.uid){
+            return (
+            //    <Route exact path="/" component={Home}></Route>
+               <Redirect to={{pathname: '/'}}/>
+            )
+        } else {
+            return (
+                    <div className="ui container">
+                    
+                        <div className="ui grid centered">
+                            <div className="ui five wide column">
+                                <div className="ui form">
+                                    <div className="ui field">
+                                        <input type="email" placeholder="Email" value={this.state.email} onChange={this.emailHandler} />
+                                    </div>
+                                    <div className="ui field">
+                                        <input type="password" placeholder="Password" value={this.state.password} onChange={this.passwordHandler} />
+                                    </div>
+                                    <div className="ui field center">
+                                        <center>
+                                            <button className="ui button centered" onClick={ this.props.GLogin }> Login with Google</button>
+                                            <button className="ui button centered" onClick={this.loginHandler} > Login</button>
+                                        </center>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        );
+            )
+        }
+       
     }
 }
 
 const mapStateToProps = (state) => {
+    console.log('ini state dari login', state);
+    
     return {
-        
+        uid: state.user.uid
     }
 }
 

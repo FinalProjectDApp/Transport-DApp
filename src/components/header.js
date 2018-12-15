@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 
-import { isLogin } from '../store/actions/auth'
+// import { isLogin } from '../store/actions/auth'
 
 
 let headerStyle = {
@@ -13,9 +13,11 @@ let headerStyle = {
 }
 
 class header extends Component {
-    componentDidMount() {
-        this.props.isLogin()
-    }
+    // componentDidMount() {
+    //     console.log('masuk header');
+        
+    //     this.props.isLogin()
+    // }
     render() {
         return (
             <div className="ui" style={headerStyle} >
@@ -25,13 +27,13 @@ class header extends Component {
     }
 }
 const mapStateToProps = (state) => {
-    return {
+    return { 
         user: state.user
     }
 }
 const mapDispatchToProps = (dispatch) => {
     return {
-        isLogin: () => dispatch(isLogin()),
+        // isLogin: () => dispatch(isLogin()),
     }
 }
 
