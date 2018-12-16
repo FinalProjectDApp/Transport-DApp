@@ -23,7 +23,7 @@ app.use(cors())
 const userIndex = require('./routes/users')
 const transactionIndex = require('./routes/transaction')
 
-app.use('/users', userIndex)
-app.use('/transactions', transactionIndex)
+app.use('/', userIndex)
+app.use('/trx', transactionIndex)
 
 module.exports = app;
