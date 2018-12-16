@@ -22,7 +22,7 @@ app.use(cors())
   
 const userIndex = require('./routes/users')
 const transactionIndex = require('./routes/transaction')
-
+// test
 app.use('/', userIndex)
 app.use('/trx', transactionIndex)
 
