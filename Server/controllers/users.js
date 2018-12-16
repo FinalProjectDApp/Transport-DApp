@@ -9,6 +9,7 @@ module.exports = {
             email: req.body.email
         })
         .then((resultUser) => {
+            // test
             if(resultUser && resultUser.email === req.body.email){
                 res.status(400).json({errors: {email : {message: 'Duplicate email'}}})
             } else {
