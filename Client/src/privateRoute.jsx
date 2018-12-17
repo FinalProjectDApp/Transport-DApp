@@ -15,12 +15,10 @@ class PrivateRouter extends Component {
     render() {
         if(this.props.uid){
             if(this.props.uid === '5SXI5MdZ2hfwycJ89zZppRILeBw2') {
-                console.log('masuk boss.....')
                 return (
                     <Redirect to={{pathname: '/one'}}/>
                  )
             } else {
-                console.log('masuk cunguk...')
                 return (
                    <Route exact path="/" component={Home}></Route>
                 )

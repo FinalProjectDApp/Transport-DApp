@@ -121,8 +121,8 @@ class home extends Component {
                 newArr.push(Number(newEl.join('')))
             }
             });
-            console.log(arr, 'new Arr:', newArr, input)
-            console.log('Result:', newArr.indexOf(input) !== -1)
+            // console.log(arr, 'new Arr:', newArr, input)
+            // console.log('Result:', newArr.indexOf(input) !== -1)
             if(newArr.indexOf(input) !== -1) {
                 this.setState({status: 'OK', message: 'Upload Bill Success..'})
             } else {
@@ -185,6 +185,7 @@ class home extends Component {
                             <MenuItem value="Accomodation">Accomodation</MenuItem>
                             <MenuItem value="Entertainment">Entertainment</MenuItem>
                             <MenuItem value="Misc.">Misc.</MenuItem>
+                            <MenuItem value="Transaction Adjustment"><span style={{color:'maroon'}}>Transaction Adjustment</span></MenuItem>
                         </Select>
                     </FormControl>
                     <TextField

@@ -95,9 +95,8 @@ class Home extends Component {
 
   addTransaction = (category, description, imageBill, total, status) => {
     let {email} = this.state
-    // console.log(this.web3.eth.defaultAccount)
-    console.log('masuk submit..')
-    if (!imageBill) imageBill = 'http://militan.co.id/wp-content/uploads/2017/08/Screenshot_93.png';
+    console.log('total in add trx:', Number(total))
+    if (!imageBill) imageBill = 'https://www.firstaidacademy.co.uk/app/themes/ibex-theme/img/no-img.gif';
     this.expenseInstance.addTransaction(category, description, imageBill, Number(total), status, email, { from: this.state.account })
       .then((result) => {
         // this.watchEvents()
@@ -121,16 +120,6 @@ class Home extends Component {
         <Navbar></Navbar>
         <main className="container" style={{marginTop: 10}}>
           <div>
-            <div className="ui centered card" >
-              <div class="content">
-                <div class="header">Groups</div>
-              </div>
-              <div class="content">
-              </div>
-              <div class="extra content">
-                <button class="ui button">Create Group</button>
-              </div>
-            </div>
             <FormInput
               account={this.state.account}
               transactions={this.state.transactions}

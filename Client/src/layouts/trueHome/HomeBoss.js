@@ -82,31 +82,43 @@ class Home extends Component {
               switch (transaction[1]) {
                 case 'Food & Beverage':
                   obj = {
-                    color:"#F7464A",
+                    color:"#F7464A", //red
                     highlight: "#FF5A5E"
                   }
                   break;
                 case 'Transportation':
                   obj = {
-                    color: "#46BFBD",
+                    color: "#46BFBD",//turqois
                     highlight: "#5AD3D1"
                   }
                   break;
                 case 'Accomodation':
                   obj = {
-                    color: "#33cc33",
+                    color: "#33cc33",//green
                     highlight: "#2eb82e"
                   }
                   break;
                 case 'Entertainment':
                   obj = {
-                    color: "#eeee00",
+                    color: "#eeee00",//yellow
                     highlight: "#bbbb00"
                   }
                   break;
                 case 'Misc.':
                   obj = {
-                    color: "#333333",
+                    color: "#631919",//brown
+                    highlight: "#421010"
+                  }
+                  break;
+                case 'Transaction Adjustment':
+                  obj = {
+                    color: "#e57e00",//orange
+                    highlight: "#b26200"
+                  }
+                  break;
+                case 'Unused Budget':
+                  obj = {
+                    color: "#333333",//grey
                     highlight: "#111111"
                   }
                   break;
