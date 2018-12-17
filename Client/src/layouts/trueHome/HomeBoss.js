@@ -22,7 +22,8 @@ class Home extends Component {
       voting: false,
       choosed: false,
       email: '',
-      chartData: []
+      chartData: [],
+      totalExpense: 0
     }
     // this.web3 = new Web3(Web3.givenProvider || "ws://localhost:7545");
     if (typeof web3 == 'undefined') {
@@ -120,6 +121,7 @@ class Home extends Component {
                   ...obj
                 })
               }
+              this.setState(prevState => ({ totalExpense: prevState.totalExpense + transaction[4].c[0] }))
             }
           });
         }
@@ -199,7 +201,7 @@ class Home extends Component {
               <h3>Category</h3>
               {this.state.chartData.map(each => (
                 <ul>
-                  <li style={{color: each.color}}>{each.label}</li>
+                  <li style={{color: each.color}}>{each.label} <span style={{backgroundColor: each.color, color: 'white', padding: 5, borderRadius: 10}}>{(each.value / this.state.totalExpense * 100).toFixed(2)}%</span> </li>
                 </ul>
               ))}
               </div>

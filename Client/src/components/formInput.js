@@ -126,7 +126,6 @@ class home extends Component {
                             <option value="Accomodation">Accomodation</option>
                             <option value="Entertainment">Entertainment</option>
                             <option value="Misc.">Misc.</option>
-                            <option value="Adjustment" style={{color:'maroon'}}>Adjustment</option>
                         </select>
                     </div>
                     <div className="ui field">

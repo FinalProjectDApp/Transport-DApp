@@ -6,15 +6,9 @@ export const isLogin = () => {
         dispatch({ type: 'LOGIN_LOADING'})
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
-                console.log(user);
-                
                 var uid = user.uid;
                 var email = user.email;
                 var name = user.displayName;
-                // var emailVerified = user.emailVerified;
-                // var photoURL = user.photoURL;
-                // var isAnonymous = user.isAnonymous;
-                // var providerData = user.providerData;
                 dispatch({ type: 'LOGIN_SUCCESS', payload: {email: email, uid: uid, name: name}})
                 historyy.push('/')
             } else {
