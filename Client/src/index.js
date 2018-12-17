@@ -9,12 +9,12 @@ import historyy from '../src/history'
 
 
 // Layouts
-import App from './App'
+// import App from './App'
 import { LoadingContainer } from 'drizzle-react-components'
 import Home from './layouts/trueHome/Home'
 import HomeBoss from './layouts/trueHome/HomeBoss'
 
-import Header from '../src/components/header'
+// import Header from '../src/components/header'
 import login from '../src/containers/login'
 import { history, store } from './store'
 import drizzleOptions from './drizzleOptions'
