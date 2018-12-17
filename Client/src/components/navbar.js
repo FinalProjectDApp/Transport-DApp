@@ -1,20 +1,43 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
+import { withStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+
 
 import { logout } from '../store/actions/auth'
 
+
+const styles = {
+    root: {
+      flexGrow: 1,
+    },
+    grow: {
+      flexGrow: 1,
+    },
+    menuButton: {
+      marginLeft: -12,
+      marginRight: 20,
+    },
+  };
+  
+
 class navbar extends Component {
     render() {
+        const { classes } = this.props
         return (
-            <div className="ui container" style={{ margin: 10 }}>
-                <div className="ui menu">
-                <a className="item">Browse</a>
-                <a className="item">Submit</a>
-                <div className="right menu">
-                    <a className="item" onClick={this.props.logout}>Log Out</a>
-                </div>
-                </div>
-            </div>
+            <div className={classes.root}>
+            <AppBar position="static">
+                <Toolbar>
+                <Typography variant="h6" color="inherit" className={classes.grow}>
+                    Exportein
+                </Typography>
+                <Button color="inherit" onClick={this.props.logout}>Logout</Button>
+                </Toolbar>
+            </AppBar>
+    </div>
         );
     }
 }
@@ -30,4 +53,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(navbar);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(navbar));

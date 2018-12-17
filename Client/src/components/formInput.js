@@ -2,6 +2,45 @@ import React, { Component } from 'react';
 import { AccountData, ContractData, ContractForm } from 'drizzle-react-components'
 import { storageRef } from '../firebase'
 import axios from 'axios'
+import { withStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid'
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button'
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import TextField from '@material-ui/core/TextField';
+import Input from '@material-ui/core/Input';
+import FormHelperText from '@material-ui/core/FormHelperText';
+
+const styles = theme => ({
+    root: {
+      ...theme.mixins.gutters(),
+      paddingTop: theme.spacing.unit * 2,
+      paddingBottom: theme.spacing.unit * 2,
+    },
+    formControl: {
+      margin: theme.spacing.unit,
+      minWidth: 600,
+    },
+    textField: {
+        marginLeft: theme.spacing.unit,
+        marginRight: theme.spacing.unit,
+    },
+    numField : {
+        width: 600,
+        marginLeft: theme.spacing.unit,
+        marginRight: theme.spacing.unit,
+    },
+    selectEmpty: {
+      marginTop: theme.spacing.unit * 2,
+    },
+    button: {
+        margin: theme.spacing.unit,
+    },
+  });
 
 class home extends Component {
     constructor(props, context) {
@@ -98,6 +137,7 @@ class home extends Component {
 
     submitForm=()=>{
         this.props.addTransaction(this.state.category, this.state.description, this.state.bill, this.state.total, this.state.status)
+        this.clearForm()
     }
     clearForm=()=>{
         this.setState({
@@ -111,55 +151,111 @@ class home extends Component {
         })
     }
     render() {
+        const { classes } = this.props;
         return (
             <div className="ui container">
-                <div className="ui form segment">
-                    <div className="ui header">
-                        <h3>Input New Transaction</h3>
+            <Paper className={classes.root} elevation={1}>
+                <Typography variant="h5" component="h3">
+                    Input New Transaction
+                </Typography>
+                <br />
+                <br />
+                <hr></hr>
+                <Grid
+                    container
+                    direction="column"
+                    justify="center"
+                    alignItems="center"
+                >
+                    <FormControl className={classes.formControl}>
+                        <InputLabel htmlFor="age-simple">Category</InputLabel>
+                        <Select
+                            value={this.state.category}
+                            onChange={(e)=>this.handleForm('category', e.target.value)}
+                            inputProps={{
+                                name: 'age',
+                                id: 'age-simple',
+                            }}
+                            >
+                            <MenuItem value="">
+                            <em>Select a Category</em>
+                            </MenuItem>
+                            <MenuItem value="Food & Beverage">Food & Beverage</MenuItem>
+                            <MenuItem value="Transportation">Transportation</MenuItem>
+                            <MenuItem value="Accomodation">Accomodation</MenuItem>
+                            <MenuItem value="Entertainment">Entertainment</MenuItem>
+                            <MenuItem value="Misc.">Misc.</MenuItem>
+                        </Select>
+                    </FormControl>
+                    <TextField
+                        id="standard-multiline-static"
+                        label="Description"
+                        multiline
+                        rows="4"
+                        style={{ margin: 8 }}
+                        onChange={(e)=>this.handleForm('description', e.target.value)}
+                        value={this.state.description}
+                        className={classes.numField}
+                        margin="normal"
+                        />
+                    <TextField
+                        id="standard-number"
+                        label="Total Expense"
+                        value={this.state.total}
+                        onChange={(e)=>this.handleForm('total', e.target.value)}
+                        type="number"
+                        className={classes.numField}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        margin="normal"
+                    />
+                    <FormControl className={classes.formControl}>
+                        <InputLabel htmlFor="upload-bill">Bill / Invoice</InputLabel>
+                        <Input
+                            inputProps={{
+                                id:"upload-bill",
+                                name:"upload-bill"
+                            }}
+                            type="file"
+                            onChange={(e)=>this.handleForm('bill', e.target.files[0])}
+                        />
+                        <FormHelperText>Upload Bill / Invoice</FormHelperText>
+                    </FormControl>
+                </Grid>
+                
+                {this.state.loading && <div className="ui segment">
+                    <div className="ui active inverted dimmer">
+                    <div className="ui text loader">Uploading File..</div>
                     </div>
-                    <div className="ui field">
-                        <label>Category</label>
-                        <select className="ui search dropdown" onChange={(e)=>this.handleForm('category', e.target.value)} required={true}>
-                            <option>-- Select a Category --</option>
-                            <option value="Food & Beverage">Food & Beverage</option>
-                            <option value="Transportation">Transportation</option>
-                            <option value="Accomodation">Accomodation</option>
-                            <option value="Entertainment">Entertainment</option>
-                            <option value="Misc.">Misc.</option>
-                        </select>
-                    </div>
-                    <div className="ui field">
-                        <label>Description</label>
-                        <textarea 
-                            onChange={(e)=>this.handleForm('description', e.target.value)}
-                            value={this.state.description}></textarea>
-                    </div>
-                    <div className="ui field">
-                        <label>Total Expense</label>
-                        <input type="number" 
-                            onChange={(e)=>this.handleForm('total', e.target.value)}
-                            value={this.state.total}/>
-                    </div>
-                    <div className="ui field">
-                        <label>Bill / Invoice</label>
-                        <input type="file" onChange={(e)=>this.handleForm('bill', e.target.files[0])}/>
-                    </div>
-                    <div className="actions">
-                        {this.state.loading && <div className="ui segment">
-                            <div className="ui active inverted dimmer">
-                                <div className="ui text loader">Uploading File..</div>
-                            </div>
-                            <p>Uploading File..</p>
-                        </div>}
-                        {!this.state.loading && <div className="ui blue button" onClick={this.submitForm} >Save</div>}
-                        <div className="ui red button" onClick={this.clearForm}>Cancel</div>
-                    </div>
-                </div>
-            </div>
+                    <p>Uploading File..</p>
+                </div>}
+                <hr></hr>
+                {this.state.loading ? <Button
+                    disabled
+                    className={classes.button}
+                >
+                    Save
+                </Button> : <Button
+                    color="primary"
+                    onClick={this.submitForm}
+                    className={classes.button}
+                >
+                    Save
+                </Button>}
+                <Button
+                    color="secondary"
+                    onClick={this.clearForm}
+                    className={classes.button}
+                >
+                    Cancel
+                </Button>
+            </Paper>
+        </div>
         );
     }
 }
 
 
 
-export default home;
+export default withStyles(styles)(home);
