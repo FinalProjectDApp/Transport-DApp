@@ -1,4 +1,5 @@
 const Trx = require('../models/transaction')
+const User = require('../models/user')
 
 module.exports = {
     read: function(req, res) {
@@ -88,5 +89,20 @@ module.exports = {
         }).catch((err) => {
             res.status(500).json(err)
         }) 
+    },
+    getTrxbyEmail: (req, res) => {
+        User.findOne({
+            email: req.params.email
+        })
+        .then((user) => {
+            Trx.find({
+                user: user._id
+            })
+            .then((trx) => {
+                res.status(200).json(trx)
+            })
+        }).catch((err) => {
+            res.status(500).json(err)
+        });
     }
 }

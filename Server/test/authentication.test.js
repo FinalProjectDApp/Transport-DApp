@@ -1,8 +1,3 @@
-/**
- * @author Dimitri Wahyudiputra <dimitri.wahyudiputra@gmail.com>
- * @description Authentication tests (Register and Login)
- */
-
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const jwt = require('jsonwebtoken');
@@ -211,14 +206,22 @@ describe('Authentication tests', function () {
     });
 
     it('should send an error object (wrong format email', async function () {
-        const user = { email: {email: 'dwi@test.com'}, password: 'secrets' };
-        const response = await chai
-                                .request(app)
-                                .post('/login')
-                                .send(user);
-        expect(response).to.have.status(500);
-        expect(response.body).to.be.an("object");
-        expect(response.body).to.have.property('message');
-      });
+      const user = { email: {email: 'dwi@test.com'}, password: 'secrets' };
+      const response = await chai
+                              .request(app)
+                              .post('/login')
+                              .send(user);
+      expect(response).to.have.status(500);
+      expect(response.body).to.be.an("object");
+      expect(response.body).to.have.property('message');
+    });
+
+    it('should send array of All User', async function () {
+      const response = await chai
+                              .request(app)
+                              .get('/users')
+      expect(response).to.have.status(200);
+      expect(response.body).to.be.an("array");
+    });
   });
 });
