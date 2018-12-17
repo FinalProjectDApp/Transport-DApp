@@ -176,7 +176,6 @@ class Home extends Component {
   render() {
     return (
       <div>
-        <Header></Header>
         <Navbar></Navbar>
         <main className="container" style={{marginTop: 10}}>
           <div>

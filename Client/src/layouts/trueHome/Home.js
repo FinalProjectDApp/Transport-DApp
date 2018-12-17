@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import Navbar from '../../components/navbar'
 import FormInput from '../../components/formInput'
 import TableTrx from '../../components/tableTrx'
-import Header from '../../components/header'
 import firebase from '../../firebase'
 
 
@@ -119,7 +118,6 @@ class Home extends Component {
   render() {
     return (
       <div>
-        <Header></Header>
         <Navbar></Navbar>
         <main className="container" style={{marginTop: 10}}>
           <div>
