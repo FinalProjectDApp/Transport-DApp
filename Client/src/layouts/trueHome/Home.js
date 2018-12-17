@@ -19,7 +19,8 @@ class Home extends Component {
       hasVoted: false,
       loading: true,
       voting: false,
-      email: ''
+      email: '',
+      grandTotal: 0
     }
     // this.web3 = new Web3(Web3.givenProvider || "ws://localhost:7545");
     if (typeof web3 == 'undefined') {
@@ -95,9 +96,10 @@ class Home extends Component {
 
   addTransaction = (category, description, imageBill, total, status) => {
     let {email} = this.state
+    let date = String(new Date().toLocaleString())
     console.log('total in add trx:', Number(total))
     if (!imageBill) imageBill = 'https://www.firstaidacademy.co.uk/app/themes/ibex-theme/img/no-img.gif';
-    this.expenseInstance.addTransaction(category, description, imageBill, Number(total), status, email, { from: this.state.account })
+    this.expenseInstance.addTransaction(category, description, imageBill, Number(total), status, email, date, { from: this.state.account })
       .then((result) => {
         // this.watchEvents()
         console.log('success add new transaction', result)
@@ -107,6 +109,21 @@ class Home extends Component {
       });
   }
 
+  setGrandTotal = (arr)=>{
+    let counter=0;
+    console.log('masuk set grand total:', arr)
+    arr.forEach((el, i)=>{
+      console.log('=========', el[4].s, el[4].c[0], 'counter:', counter)
+      if(el[4].s == -1) {
+        counter -= el[4].c[0]
+      } else {
+        counter += el[4].c[0]
+      }
+    })
+    this.setState({grandTotal: counter})
+  }
+
+  
   castVote(candidateId) {
     this.setState({ voting: true })
     this.expenseInstance.vote(candidateId, { from: this.state.account }).then((result) =>
@@ -115,6 +132,7 @@ class Home extends Component {
   }
 
   render() {
+    if(this.state.transactions.length > 0 && !this.state.grandTotal) this.setGrandTotal(this.state.transactions)
     return (
       <div>
         <Navbar></Navbar>
@@ -131,6 +149,7 @@ class Home extends Component {
               transactions={this.state.transactions}
               hasVoted={this.state.hasVoted}
               castVote={this.castVote}
+              grandTotal={this.state.grandTotal}
             ></TableTrx>
           </div>
         </main>

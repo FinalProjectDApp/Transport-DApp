@@ -73,7 +73,8 @@ class home extends Component {
     }
 
     uploadBill=(file)=>{
-        var uploadTask = storageRef.child('images/' + file.name).put(file)
+        let uniqueId = this.makeId()
+        var uploadTask = storageRef.child('images/' + uniqueId + file.name).put(file)
         uploadTask.on('state_changed', (snapshot) => {
             var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
             console.log('Upload is ' + progress + '% done');
@@ -89,6 +90,17 @@ class home extends Component {
                 this.checkBill(downloadURL)
             });
         });
+    }
+
+    makeId=()=> {
+        var text = "";
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-.,?/[]{}+=_";
+        
+        for (var i = 0; i < 5; i++) {
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
+        
+        return text;
     }
 
     checkBill=(image)=>{

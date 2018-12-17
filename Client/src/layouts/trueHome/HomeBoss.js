@@ -17,6 +17,8 @@ class Home extends Component {
       account: '0x0',
       subordinates: [],
       transactions: [],
+      transactionsAmount: 0,
+      grandTotal: 0,
       hasVoted: false,
       loading: true,
       voting: false,
@@ -65,7 +67,7 @@ class Home extends Component {
 
         return this.expenseInstance.totalTransactions()
       }).then(async (totalTransaction) => {
-
+        this.setState({transactionsAmount: totalTransaction.c[0]})
         return { user: await this.expenseInstance.owner(), totalTransaction: totalTransaction }
       }).then(({ user, totalTransaction }) => {
         let arr = [];
@@ -171,6 +173,22 @@ class Home extends Component {
       });
   }
 
+  setGrandTotal = (arr)=>{
+    console.log('jumlah transaksi:', this.state.transactionsAmount)
+    let counter=0;
+    console.log('masuk set grand total:', arr)
+    arr.forEach((el, i)=>{
+      console.log('=========', el[4].s, el[4].c[0], 'counter:', counter)
+      if(el[4].s == -1) {
+        counter -= el[4].c[0]
+      } else {
+        counter += el[4].c[0]
+      }
+    })
+    console.log('final counter:', counter)
+    this.setState({grandTotal: counter})
+  }
+
   castVote(candidateId) {
     this.setState({ voting: true })
     this.expenseInstance.vote(candidateId, { from: this.state.account }).then((result) =>
@@ -186,6 +204,7 @@ class Home extends Component {
   }
 
   render() {
+    if(this.state.transactions.length>0 && this.state.transactions.length === this.state.transactionsAmount && !this.state.grandTotal) this.setGrandTotal(this.state.transactions)
     return (
       <div>
         <Navbar></Navbar>
@@ -222,6 +241,7 @@ class Home extends Component {
               transactions={this.state.transactions}
               hasVoted={this.state.hasVoted}
               castVote={this.castVote}
+              grandTotal={this.state.grandTotal}
             ></TableTrx>
           </div>
         </main>

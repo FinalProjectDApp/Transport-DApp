@@ -10,6 +10,7 @@ contract Expense {
         int256 total;
         string status;
         string email;
+        string createdAt;
         address user;
     }
 
@@ -46,11 +47,11 @@ contract Expense {
         transactions[i].bill, transactions[i].total, transactions[i].user );
     }
 
-    function addTransaction (string memory _category, string memory _description, string memory _bill, int256 _total, string memory _status, string memory _email) 
+    function addTransaction (string memory _category, string memory _description, string memory _bill, int256 _total, string memory _status, string memory _email, string memory _createdAt) 
     public {
         totalTransactions ++;
         owner = msg.sender;
-        transaction memory newTransaction = transaction(totalTransactions,_category, _description,  _bill, _total, _status, _email, owner);
+        transaction memory newTransaction = transaction(totalTransactions,_category, _description,  _bill, _total, _status, _email, _createdAt, owner);
         transactions.push(newTransaction);
         // emit event
         emit votedEvent(_total);

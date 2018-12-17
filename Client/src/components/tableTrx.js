@@ -13,12 +13,29 @@ const styles = {
 class table extends Component {
     state = {
        showImage: false,
-       index: 0
+       index: 0,
+       budget: 1000000
     }
+    
     componenTableCellidMount = ()=>{
         console.log('transactions in table:', this.props.transactions)
     }
 
+    formatMoney(amount, decimalCount = 0, decimal = "", thousands = ",") {
+        try {
+          decimalCount = Math.abs(decimalCount);
+          decimalCount = isNaN(decimalCount) ? 2 : decimalCount;
+      
+          const negativeSign = amount < 0 ? "-" : "";
+      
+          let i = parseInt(amount = Math.abs(Number(amount) || 0).toFixed(decimalCount)).toString();
+          let j = (i.length > 3) ? i.length % 3 : 0;
+      
+          return 'Rp ' + negativeSign + (j ? i.substr(0, j) + thousands : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousands) + (decimalCount ? decimal + Math.abs(amount - i).toFixed(decimalCount).slice(2) : "");
+        } catch (e) {
+          console.log(e)
+        }
+    }    
 
     handleClickImage=(i) =>{
         if(this.state.showImage) {
@@ -39,7 +56,7 @@ class table extends Component {
                 <Table className="ui celled table">
                     <TableHead>
                         <TableRow>
-                            <TableCell style={styles.customTableCell}>#</TableCell>
+                            <TableCell style={styles.customTableCell}>Created At</TableCell>
                             <TableCell style={styles.customTableCell}>Category</TableCell>
                             <TableCell style={styles.customTableCell}>Description</TableCell>
                             <TableCell style={styles.customTableCell}>Bill Image</TableCell>
@@ -53,17 +70,39 @@ class table extends Component {
                             {this.props.transactions.map((el, i)=>{
                                 return (
                                     <TableRow key={i}>
-                                        <TableCell>{i+1}</TableCell>
+                                        <TableCell>{new Date(el[7]).toLocaleString()}</TableCell>
                                         <TableCell>{el[1]}</TableCell>
                                         <TableCell>{el[2]}</TableCell>
                                         <TableCell><span onClick={()=>this.handleClickImage(i) } style={{color: 'blue', cursor:'pointer'}}>Show/Hide</span><br/>
                                             {this.state.showImage && i == this.state.index && <img src={el[3]} style={{height:'300px', width:'200px'}} />}
                                         </TableCell>
-                                        <TableCell numeric>{el[4].c[0]}</TableCell>
+                                        {(el[4].s == -1) && <TableCell numeric>{this.formatMoney(Number(el[4].c[0]) * -1)}</TableCell>}
+                                        {(el[4].s == 1) && <TableCell numeric>{this.formatMoney(Number(el[4].c[0]))}</TableCell>}
                                         <TableCell>{el[5]}</TableCell>
                                     </TableRow>
                                 )
                             })}
+                            <TableRow>
+                                <TableCell><strong>Grand Total</strong></TableCell>
+                                <TableCell></TableCell>
+                                <TableCell></TableCell>
+                                <TableCell></TableCell>
+                                <TableCell><strong>{this.formatMoney(this.props.grandTotal)}</strong></TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell><strong style={{color: "green"}}>Budgeted</strong></TableCell>
+                                <TableCell></TableCell>
+                                <TableCell></TableCell>
+                                <TableCell></TableCell>
+                                <TableCell><strong>{this.formatMoney(this.state.budget)}</strong></TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell><strong>Remaining Amount</strong></TableCell>
+                                <TableCell></TableCell>
+                                <TableCell></TableCell>
+                                <TableCell></TableCell>
+                                <TableCell><strong>{this.formatMoney(this.state.budget - this.props.grandTotal)}</strong></TableCell>
+                            </TableRow>
                         </TableBody> : null
                     } 
                 </Table>

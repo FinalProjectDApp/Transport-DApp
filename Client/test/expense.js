@@ -15,7 +15,7 @@ contract('Expense', accounts => {
 
 
   it("add and get transaction as intended", async () => {
-    await instance.addTransaction('food', 'sate padang', 'asdas.co', 123456, 'OK', 'asdasd@asd.com', { from: accounts[0] })
+    await instance.addTransaction('food', 'sate padang', 'asdas.co', 123456, 'OK', 'asdasd@asd.com', '2018-12-17T11:52:45.974Z', { from: accounts[0] })
     const newTransaction = await instance.transactions(0)
     assert.equal(newTransaction[0], 1, 'contains the correct id')
     assert.equal(newTransaction[1], 'food', 'contains the correct category')
@@ -24,11 +24,12 @@ contract('Expense', accounts => {
     assert.equal(newTransaction[4], 123456, 'contains the correct bill image nominal')
     assert.equal(newTransaction[5], 'OK', 'contains the correct status')
     assert.equal(newTransaction[6], 'asdasd@asd.com', 'contains the correct email')
-    assert.equal(newTransaction[7], accounts[0], 'contains the correct message sender')
+    assert.equal(newTransaction[7], '2018-12-17T11:52:45.974Z', 'contains the correct date')
+    assert.equal(newTransaction[8], accounts[0], 'contains the correct message sender')
   })
 
   it("add and get adjustment transaction as intended", async () => {
-    await instance.addTransaction('adjustment', 'sate padang', 'asdas.co', -100000, 'OK', 'asdasd@asd.com', { from: accounts[0] })
+    await instance.addTransaction('adjustment', 'sate padang', 'asdas.co', -100000, 'OK', 'asdasd@asd.com', '2018-12-17T11:52:45.974Z', { from: accounts[0] })
     const newTransaction = await instance.transactions(1)
     assert.equal(newTransaction[0], 2, 'contains the correct id')
     assert.equal(newTransaction[1], 'adjustment', 'contains the correct category')
@@ -37,7 +38,8 @@ contract('Expense', accounts => {
     assert.equal(newTransaction[4], -100000, 'contains the correct bill image nominal')
     assert.equal(newTransaction[5], 'OK', 'contains the correct status')
     assert.equal(newTransaction[6], 'asdasd@asd.com', 'contains the correct email')
-    assert.equal(newTransaction[7], accounts[0], 'contains the correct message sender')
+    assert.equal(newTransaction[7], '2018-12-17T11:52:45.974Z', 'contains the correct date')
+    assert.equal(newTransaction[8], accounts[0], 'contains the correct message sender')
   })
 
 })
