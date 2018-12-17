@@ -81,6 +81,30 @@ describe('Transaction', () => {
         })
     })
 
+    it('Get Transactions by user email', (done) => {
+        chai
+        .request(app)
+        .get(`/trx/user/user@test.com`)
+        .set('email', emailUser)
+        .end((err, res) => {
+            res.should.have.status(200)
+            res.body.should.be.a('array')
+            done()
+        })
+    })
+
+    it('Get All Transactions user with wrong email', (done) => { 
+        chai
+        .request(app)
+        .get(`/trx/user/user@test`)
+        .set('email', emailUser)
+        .end((err, res) => {
+            res.should.have.status(500)
+            res.body.should.be.a('object')
+            done()
+        })
+    })
+
     it('Search Transaction by query of Description', (done) => {
         chai
         .request(app)

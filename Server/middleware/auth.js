@@ -27,8 +27,6 @@ module.exports = {
         .then((result) => {
             if(String(result.user) === String(req.decoded._id)){
                 next()
-            } else {
-                res.status(400).json({message: 'Not Authorized'})
             }
         })
         .catch((err) => {
