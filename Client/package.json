@@ -8,6 +8,8 @@
     "truffle-hdwallet-provider": "^0.0.5"
   },
   "dependencies": {
+    "@material-ui/core": "^3.6.2",
+    "@material-ui/icons": "^3.0.1",
     "autoprefixer": "7.1.6",
     "axios": "^0.18.0",
     "babel-core": "6.26.0",
