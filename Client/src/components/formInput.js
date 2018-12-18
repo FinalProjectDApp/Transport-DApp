@@ -160,6 +160,7 @@ class home extends Component {
             }
             this.setState({loading: false})
         }).catch((err) => {
+            this.setState({status: 'Bill/Invoice does not contain total amount!', message: 'No Bill/Invoice'})
             console.log(err)
             this.setState({loading: false})
         });

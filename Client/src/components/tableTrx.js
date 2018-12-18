@@ -84,6 +84,7 @@ class table extends Component {
                                         {el[5] ==='OK' && <TableCell style={{color:'green'}}>{el[5]}</TableCell>}
                                         {el[5] ==='Different' && <TableCell style={{color:'red'}}>{el[5]}</TableCell>}
                                         {el[5] ==='Adjusted' && <TableCell style={{color:'green'}}>{el[5]}</TableCell>}
+                                        {el[5] ==='Bill/Invoice does not contain total amount!' && <TableCell style={{color:'red'}}>{el[5]}</TableCell>}
                                     </TableRow>
                                 )
                             })}
