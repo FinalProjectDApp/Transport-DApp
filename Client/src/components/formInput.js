@@ -48,11 +48,14 @@ class home extends Component {
         this.state = {
             category: '',
             description: '',
-            bill: '',
+            bill: null,
+            file: null,
             total: '0',
             status: '',
             loading: false,
-            message: ''
+            message: '',
+            transactionId: '',
+            adjustmentIdAmount: null
         }
         // this.contracts = context.drizzle.contracts
     }
@@ -63,6 +66,12 @@ class home extends Component {
         if(form === 'bill') {
             this.setState({loading: true}, ()=>{
                 this.uploadBill(val)
+            })
+        } else if (form === 'transactionId') {
+            this.setState({
+                [form]:val
+            }, ()=>{
+                this.findTransactionById(this.state.transactionId)
             })
         } else {
             this.setState({
@@ -94,7 +103,7 @@ class home extends Component {
 
     makeId=()=> {
         var text = "";
-        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-.,?/[]{}+=_";
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         
         for (var i = 0; i < 5; i++) {
             text += possible.charAt(Math.floor(Math.random() * possible.length));
@@ -123,6 +132,7 @@ class home extends Component {
         })
         .then((result) => {
             let input = Number(this.state.total)
+            if(this.state.category === 'Transaction Adjustment') input = Number(this.state.adjustmentIdAmount) + Number(this.state.total)
             let text = result.data.responses[0].fullTextAnnotation.text
             let arr = text.split('\n')
             let newArr=[]
@@ -135,10 +145,18 @@ class home extends Component {
             });
             // console.log(arr, 'new Arr:', newArr, input)
             // console.log('Result:', newArr.indexOf(input) !== -1)
-            if(newArr.indexOf(input) !== -1) {
-                this.setState({status: 'OK', message: 'Upload Bill Success..'})
+            if(this.state.category !== 'Transaction Adjustment') {
+                if(newArr.indexOf(input) !== -1) {
+                    this.setState({status: 'OK', message: 'Upload Bill Success..'})
+                } else {
+                    this.setState({status: 'Different', message: 'We found there is difference between the total you input and the total in the bill. Please make adjustment by creating new transaction with category adjustment!'})
+                }
             } else {
-                this.setState({status: 'Different', message: 'We found there is difference between the total you input and the total in the bill. Please make adjustment by creating new transaction with category adjustment!'})
+                if(newArr.indexOf(input) !== -1) {
+                    this.setState({status: 'Adjusted', message: 'Upload Bill Success..'})
+                } else {
+                    this.setState({status: 'Different', message: 'We found there is difference between the total you input and the total in the bill. Please make adjustment by creating new transaction with category adjustment!'})
+                }
             }
             this.setState({loading: false})
         }).catch((err) => {
@@ -147,18 +165,32 @@ class home extends Component {
         });
     }
 
+    findTransactionById=(id)=>{
+        this.props.transactions.forEach((el, i)=>{
+            if(el[0].c[0] === Number(id)) {
+                this.setState({
+                    adjustmentIdAmount: el[4].c[0]
+                })
+            }
+        })
+    }
+
     submitForm=()=>{
         this.props.addTransaction(this.state.category, this.state.description, this.state.bill, this.state.total, this.state.status)
         this.clearForm()
     }
     clearForm=()=>{
+        this.fileInput.value = ''
         this.setState({
             category: '',
             description: '',
             bill: '',
             total: '0',
             status: '',
+            file: null,
             loading: false,
+            transactionId: '',
+            adjustmentIdAmount: null,
             message: ''
         })
     }
@@ -200,6 +232,16 @@ class home extends Component {
                             <MenuItem value="Transaction Adjustment"><span style={{color:'maroon'}}>Transaction Adjustment</span></MenuItem>
                         </Select>
                     </FormControl>
+                    {/* form id trx to be adjusted */}
+                    { this.state.category === 'Transaction Adjustment' && <TextField
+                        id="standard-text"
+                        label="Transaction ID"
+                        style={{ margin: 8 }}
+                        onChange={(e)=>this.handleForm('transactionId', e.target.value)}
+                        value={this.state.transactionId}
+                        className={classes.numField}
+                        margin="normal"
+                        />}
                     <TextField
                         id="standard-multiline-static"
                         label="Description"
@@ -230,6 +272,7 @@ class home extends Component {
                                 id:"upload-bill",
                                 name:"upload-bill"
                             }}
+                            ref={ref=> this.fileInput = ref}
                             type="file"
                             onChange={(e)=>this.handleForm('bill', e.target.files[0])}
                         />
@@ -239,9 +282,9 @@ class home extends Component {
                 
                 {this.state.loading && <div className="ui segment">
                     <div className="ui active inverted dimmer">
-                    <div className="ui text loader">Uploading File..</div>
+                    <div className="ui text loader">Uploading and Analyzing File..</div>
                     </div>
-                    <p>Uploading File..</p>
+                    <p>Uploading and Analyzing File..</p>
                 </div>}
                 <hr></hr>
                 {this.state.loading ? <Button

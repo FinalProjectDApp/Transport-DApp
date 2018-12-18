@@ -94,12 +94,13 @@ class Home extends Component {
     })
   }
 
-  addTransaction = (category, description, imageBill, total, status) => {
+  addTransaction = async (category, description, imageBill, total, status) => {
     let {email} = this.state
+    let id = await this.getId()
     let date = String(new Date().toLocaleString())
     console.log('total in add trx:', Number(total))
     if (!imageBill) imageBill = 'https://www.firstaidacademy.co.uk/app/themes/ibex-theme/img/no-img.gif';
-    this.expenseInstance.addTransaction(category, description, imageBill, Number(total), status, email, date, { from: this.state.account })
+    this.expenseInstance.addTransaction(category, description, imageBill, Number(total), status, email, date, Number(id), { from: this.state.account })
       .then((result) => {
         // this.watchEvents()
         console.log('success add new transaction', result)
@@ -109,11 +110,20 @@ class Home extends Component {
       });
   }
 
+  getId=()=>{
+    let possible = '1234567890'
+    var text = "";
+        
+        for (var i = 0; i < 5; i++) {
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
+        
+        return '666'+text;
+  }
+
   setGrandTotal = (arr)=>{
     let counter=0;
-    console.log('masuk set grand total:', arr)
     arr.forEach((el, i)=>{
-      console.log('=========', el[4].s, el[4].c[0], 'counter:', counter)
       if(el[4].s == -1) {
         counter -= el[4].c[0]
       } else {

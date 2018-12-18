@@ -11,7 +11,7 @@ contract Expense {
         string status;
         string email;
         string createdAt;
-        address user;
+        // string location;
     }
 
     uint256 public constant maxTransactions = 1000;
@@ -37,21 +37,30 @@ contract Expense {
         int256 indexed _total
     );
 
-    function getTransactionsLength() public returns (uint) {
-        return transactions.length;
-    }
+    // function getTransactionsLength() public returns (uint) {
+    //     return transactions.length;
+    // }
 
-    function getTransactionAt(uint i) public 
-    returns (uint id, string memory category, string memory description, string memory bill, int256 total, address user) {
-        return (transactions[i].id, transactions[i].category, transactions[i].description, 
-        transactions[i].bill, transactions[i].total, transactions[i].user );
-    }
+    // function getTransactionAt(uint i) public 
+    // returns (uint id, string memory category, string memory description, string memory bill, int256 total, string memory location) {
+    //     return (transactions[i].id, transactions[i].category, transactions[i].description, 
+    //     transactions[i].bill, transactions[i].total, transactions[i].location );
+    // }
 
-    function addTransaction (string memory _category, string memory _description, string memory _bill, int256 _total, string memory _status, string memory _email, string memory _createdAt) 
-    public {
+    function addTransaction (
+        string memory _category, 
+        string memory _description, 
+        string memory _bill, 
+        int256 _total, 
+        string memory _status, 
+        string memory _email, 
+        string memory _createdAt, 
+        uint _id
+        // string memory _location
+    ) public {
         totalTransactions ++;
         owner = msg.sender;
-        transaction memory newTransaction = transaction(totalTransactions,_category, _description,  _bill, _total, _status, _email, _createdAt, owner);
+        transaction memory newTransaction = transaction(_id,_category, _description,  _bill, _total, _status, _email, _createdAt);
         transactions.push(newTransaction);
         // emit event
         emit votedEvent(_total);
