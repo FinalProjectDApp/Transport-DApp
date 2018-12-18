@@ -13,12 +13,15 @@ module.exports = {
     },
     create: function(req, res) {
         Trx.create({
+            transactionId: req.body.transactionId,
             category: req.body.category,
             description: req.body.description,
             bill: req.body.bill,
             total: req.body.total,
             status: req.body.status,
-            user: req.decoded._id
+            email: req.body.email,
+            location: req.body.location,
+            user: req.decoded._id,
         })
         .then((result) => {
             res.status(201).json({message: 'Data Saved', data: result})
@@ -34,11 +37,14 @@ module.exports = {
             Trx.updateOne({
                 _id: req.params.id
             }, {
+                transactionId: req.body.id,
                 category: req.body.category,
                 description: req.body.description,
                 bill: req.body.bill,
                 total: req.body.total,
                 status: req.body.status,
+                email: req.body.email,
+                location: req.body.location
             })
             .then((result) => {
                 res.status(200).json({message: 'Data Updated', data: result})
