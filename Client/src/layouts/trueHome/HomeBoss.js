@@ -75,13 +75,13 @@ class Home extends Component {
         let arr = [];
         let chartData = [];
         let arrSubordinates = [];
-        for (let i = 0; i <= totalTransaction; i++) {
+        for (let i = 0; i < totalTransaction; i++) {
           let locationStr = await this.expenseInstance.locations(i);
           let location = JSON.parse(locationStr);
-          this.expenseInstance.transactions(i).then( (transaction)=> {
+          let transaction = await this.expenseInstance.transactions(i) 
             let owner = transaction[6]
             if (!arrSubordinates.includes(owner)) arrSubordinates.push(owner)
-            console.log('LOCATION:', location, 'user:', owner)
+            // console.log('LOCATION:', location, 'user:', owner, arrSubordinates, !arrSubordinates.includes(owner))
             if (ownerSelected === owner) {
               this.setState({chosenSubordinate: ownerSelected})
               transaction.push(location)
@@ -143,9 +143,9 @@ class Home extends Component {
               }
               this.setState(prevState => ({ totalExpense: prevState.totalExpense + transaction[4].c[0] }))
             }
-          });
         }
         console.log('subordinates:--', arrSubordinates)
+
         this.setState({ transactions: arr, subordinates: arrSubordinates, chartData }, ()=>{
           console.log('subordinates', this.state.subordinates)
         })
