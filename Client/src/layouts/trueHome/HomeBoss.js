@@ -24,6 +24,7 @@ class Home extends Component {
       voting: false,
       choosed: false,
       email: '',
+      location: '', // add new ----------------
       chartData: [],
       totalExpense: 0,
       chosenSubordinate: ''
@@ -70,18 +71,21 @@ class Home extends Component {
       }).then(async (totalTransaction) => {
         this.setState({transactionsAmount: totalTransaction.c[0]})
         return { user: await this.expenseInstance.owner(), totalTransaction: totalTransaction }
-      }).then(({ user, totalTransaction }) => {
+      }).then(async ({ user, totalTransaction }) => {
         let arr = [];
         let chartData = [];
         let arrSubordinates = [];
-        for (let i = 0; i <= totalTransaction; i++) {
-          this.expenseInstance.transactions(i).then( (transaction)=> {
+        for (let i = 0; i < totalTransaction; i++) {
+          let locationStr = await this.expenseInstance.locations(i);
+          let location = JSON.parse(locationStr);
+          let transaction = await this.expenseInstance.transactions(i) 
             let owner = transaction[6]
             if (!arrSubordinates.includes(owner)) arrSubordinates.push(owner)
-            console.log('trx:', transaction, ' cek user--:', user, '===', owner, user === owner)
+            // console.log('LOCATION:', location, 'user:', owner, arrSubordinates, !arrSubordinates.includes(owner))
             if (ownerSelected === owner) {
               this.setState({chosenSubordinate: ownerSelected})
-              arr.push(transaction)
+              transaction.push(location)
+              arr.push(transaction) 
               let obj = {};
               switch (transaction[1]) {
                 case 'Food & Beverage':
@@ -139,9 +143,12 @@ class Home extends Component {
               }
               this.setState(prevState => ({ totalExpense: prevState.totalExpense + transaction[4].c[0] }))
             }
-          });
         }
-        this.setState({ transactions: arr, subordinates: arrSubordinates, chartData })
+        console.log('subordinates:--', arrSubordinates)
+
+        this.setState({ transactions: arr, subordinates: arrSubordinates, chartData }, ()=>{
+          console.log('subordinates', this.state.subordinates)
+        })
       }).catch(err => {
         console.log(err)
       })
@@ -174,6 +181,7 @@ class Home extends Component {
         console.error(err);
       });
   }
+
 
   setGrandTotal = (arr)=>{
     console.log('jumlah transaksi:', this.state.transactionsAmount)

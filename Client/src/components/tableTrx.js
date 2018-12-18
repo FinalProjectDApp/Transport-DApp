@@ -63,6 +63,7 @@ class table extends Component {
                             <TableCell style={styles.customTableCell}>Bill Image</TableCell>
                             <TableCell style={styles.customTableCell} numeric>Total</TableCell>
                             <TableCell style={styles.customTableCell}>Status</TableCell>
+                            <TableCell style={styles.customTableCell}>Location</TableCell>
                         </TableRow>
                     </TableHead>
                     {
@@ -84,6 +85,10 @@ class table extends Component {
                                         {el[5] ==='OK' && <TableCell style={{color:'green'}}>{el[5]}</TableCell>}
                                         {el[5] ==='Different' && <TableCell style={{color:'red'}}>{el[5]}</TableCell>}
                                         {el[5] ==='Adjusted' && <TableCell style={{color:'green'}}>{el[5]}</TableCell>}
+                                        {el[5] ==='Bill/Invoice does not contain total amount!' && <TableCell style={{color:'red'}}>{el[5]}</TableCell>}
+                                        {el[5] ==='' && <TableCell style={{color:'red'}}>No Transaction Data!</TableCell>}
+                                        {/* Location... */}
+                                        {el[8] && <TableCell>{JSON.stringify(el[8])}</TableCell>}
                                     </TableRow>
                                 )
                             })}

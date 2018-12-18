@@ -20,6 +20,7 @@ class Home extends Component {
       loading: true,
       voting: false,
       email: '',
+      location: '', // add new-----------------
       grandTotal: 0
     }
     // this.web3 = new Web3(Web3.givenProvider || "ws://localhost:7545");
@@ -51,6 +52,7 @@ class Home extends Component {
     // TODO: Refactor with promise chain
     this.cekLogin()
     this.getTransactions()
+    this.getLocation()
   }
 
   getTransactions=()=>{
@@ -98,9 +100,10 @@ class Home extends Component {
     let {email} = this.state
     let id = await this.getId()
     let date = String(new Date().toLocaleString())
+    let location = this.state.location
     console.log('total in add trx:', Number(total))
     if (!imageBill) imageBill = 'https://www.firstaidacademy.co.uk/app/themes/ibex-theme/img/no-img.gif';
-    this.expenseInstance.addTransaction(category, description, imageBill, Number(total), status, email, date, Number(id), { from: this.state.account })
+    this.expenseInstance.addTransaction(category, description, imageBill, Number(total), status, email, date, Number(id), location, { from: this.state.account })
       .then((result) => {
         // this.watchEvents()
         console.log('success add new transaction', result)
@@ -108,6 +111,26 @@ class Home extends Component {
       }).catch(function (err) {
         console.error(err);
       });
+  }
+
+  // add new ------------------------------
+  getLocation=()=>{
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(this.showPosition);
+    } else {
+       console.log("Geolocation is not supported by this browser.");
+    }
+  }
+
+  showPosition=(position)=> {
+    let obj={
+      lat: position.coords.latitude,
+      long: position.coords.longitude
+    };
+    let storeObj = JSON.stringify(obj);
+    this.setState({location: storeObj}, ()=>{
+      console.log('this.state.location:', this.state.location)
+    });
   }
 
   getId=()=>{

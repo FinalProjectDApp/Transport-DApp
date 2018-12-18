@@ -11,7 +11,10 @@ contract Expense {
         string status;
         string email;
         string createdAt;
-        // string location;
+    }
+
+    struct location {
+        string location;
     }
 
     uint256 public constant maxTransactions = 1000;
@@ -20,6 +23,7 @@ contract Expense {
     // Owner => last files id
     mapping(address => uint256) public lastIds;
     transaction[] public transactions;
+    location[] public locations;
     uint256 public totalTransactions;
     address public owner;
 
@@ -54,13 +58,15 @@ contract Expense {
         int256 _total, 
         string memory _status, 
         string memory _email, 
-        string memory _createdAt, 
-        uint _id
-        // string memory _location
+        string memory _createdAt,
+        uint _id,
+        string memory _location
     ) public {
         totalTransactions ++;
         owner = msg.sender;
         transaction memory newTransaction = transaction(_id,_category, _description,  _bill, _total, _status, _email, _createdAt);
+        location memory newLocation = location(_location);
+        locations.push(newLocation);
         transactions.push(newTransaction);
         // emit event
         emit votedEvent(_total);
