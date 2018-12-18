@@ -31,10 +31,8 @@ class navbar extends Component {
             <div className={classes.root}>
             <AppBar position="static">
                 <Toolbar>
-                <Typography variant="h6" color="inherit" className={classes.grow}>
-                    Exportein
-                </Typography>
-                <Button color="inherit" onClick={this.props.logout}>Logout</Button>
+                    <img src={require('../assets/Xportein Logo.png')} style={{height: 70, marginRight: 'auto'}} />
+                    <Button color="inherit" onClick={this.props.logout}>Logout</Button>
                 </Toolbar>
             </AppBar>
     </div>

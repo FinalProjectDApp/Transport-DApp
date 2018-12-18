@@ -84,9 +84,7 @@ class Login extends Component {
                 <main className={classes.main}>
                     <CssBaseline />
                     <Paper className={classes.paper}>
-                        <Avatar className={classes.avatar}>
-                            <LockIcon />
-                        </Avatar>
+                        <img src={require('../assets/Xportein Logo.png')} style={{width: 150}} />
                         <Typography component="h1" variant="h5">
                             Sign in
                         </Typography>

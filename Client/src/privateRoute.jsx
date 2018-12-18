@@ -14,7 +14,7 @@ class PrivateRouter extends Component {
     }
     render() {
         if(this.props.uid){
-            if(this.props.uid === '5SXI5MdZ2hfwycJ89zZppRILeBw2') {
+            if(this.props.uid === 'gs6r3Ugc0fcuIylw7b1KfRH2OTP2') {
                 return (
                     <Redirect to={{pathname: '/one'}}/>
                  )

@@ -1,13 +1,13 @@
 import firebase from 'firebase'
 
 var config = {
-  apiKey: "AIzaSyCz3ckgFrWt6inJVdW93hL2__Sh3boef-E",
-    authDomain: "blogcoffee-220123.firebaseapp.com",
-    databaseURL: "https://blogcoffee-220123.firebaseio.com",
-    projectId: "blogcoffee-220123",
-    storageBucket: "blogcoffee-220123.appspot.com",
-    messagingSenderId: "435544119561"
-  };
+  apiKey: "AIzaSyBlHhRqxdE8lpg1aFnozTxzNhzEHChBGdU",
+  authDomain: "xportein.firebaseapp.com",
+  databaseURL: "https://xportein.firebaseio.com",
+  projectId: "xportein",
+  storageBucket: "xportein.appspot.com",
+  messagingSenderId: "985613506449"
+};
 firebase.initializeApp(config);
 
 export const provider = new firebase.auth.GoogleAuthProvider();

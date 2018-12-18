@@ -83,24 +83,16 @@ class table extends Component {
                                 )
                             })}
                             <TableRow>
-                                <TableCell><strong>Grand Total</strong></TableCell>
-                                <TableCell></TableCell>
-                                <TableCell></TableCell>
-                                <TableCell></TableCell>
+                                <TableCell rowSpan={3}></TableCell>
+                                <TableCell colSpan={4} style={{textAlign: 'right', borderLeft: 0}}><strong>Grand Total</strong></TableCell>
                                 <TableCell><strong>{this.formatMoney(this.props.grandTotal)}</strong></TableCell>
                             </TableRow>
                             <TableRow>
-                                <TableCell><strong style={{color: "green"}}>Budgeted</strong></TableCell>
-                                <TableCell></TableCell>
-                                <TableCell></TableCell>
-                                <TableCell></TableCell>
+                                <TableCell colSpan={4} style={{textAlign: 'right', color: "green"}}><strong>Budgeted</strong></TableCell>
                                 <TableCell><strong>{this.formatMoney(this.state.budget)}</strong></TableCell>
                             </TableRow>
                             <TableRow>
-                                <TableCell><strong>Remaining Amount</strong></TableCell>
-                                <TableCell></TableCell>
-                                <TableCell></TableCell>
-                                <TableCell></TableCell>
+                                <TableCell colSpan={4} style={{textAlign: 'right'}}><strong>Remaining Amount</strong></TableCell>
                                 <TableCell><strong>{this.formatMoney(this.state.budget - this.props.grandTotal)}</strong></TableCell>
                             </TableRow>
                         </TableBody> : null
