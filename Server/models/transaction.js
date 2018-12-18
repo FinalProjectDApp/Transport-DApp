@@ -2,6 +2,10 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 
 const transactionSchema = new Schema({
+    transactionId: {
+        type: String,
+        required: true
+    },
     category: {
         type: String,
         required: true
@@ -19,6 +23,14 @@ const transactionSchema = new Schema({
         required: true
     },
     status:  {
+        type: String,
+        required: true
+    },
+    email:  {
+        type: String,
+        required: true
+    },
+    location:  {
         type: String,
         required: true
     },
