@@ -63,7 +63,7 @@ class home extends Component {
         console.log('ini contracts:', this.props)
     }
     handleForm = (form, val)=>{
-        if(form === 'bill') {
+        if(form === 'bill' && val) {
             this.setState({loading: true}, ()=>{
                 this.uploadBill(val)
             })
@@ -161,7 +161,7 @@ class home extends Component {
             this.setState({loading: false})
         }).catch((err) => {
             this.setState({status: 'Bill/Invoice does not contain total amount!', message: 'No Bill/Invoice'})
-            console.log(err)
+            console.log("Error when checking Bill:", err)
             this.setState({loading: false})
         });
     }
