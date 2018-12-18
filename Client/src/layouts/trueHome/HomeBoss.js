@@ -25,7 +25,8 @@ class Home extends Component {
       choosed: false,
       email: '',
       chartData: [],
-      totalExpense: 0
+      totalExpense: 0,
+      chosenSubordinate: ''
     }
     // this.web3 = new Web3(Web3.givenProvider || "ws://localhost:7545");
     if (typeof web3 == 'undefined') {
@@ -79,6 +80,7 @@ class Home extends Component {
             if (!arrSubordinates.includes(owner)) arrSubordinates.push(owner)
             console.log('trx:', transaction, ' cek user--:', user, '===', owner, user === owner)
             if (ownerSelected === owner) {
+              this.setState({chosenSubordinate: ownerSelected})
               arr.push(transaction)
               let obj = {};
               switch (transaction[1]) {
@@ -227,13 +229,14 @@ class Home extends Component {
             {
               this.state.choosed && 
               <div style={{display: 'flex', flexDirection: "column", justifyContent: 'center', alignItems: 'center', padding: 10}}>
-              <Pie data={this.state.chartData} width="600" height="250" />
-              <h3>Category</h3>
-              {this.state.chartData.map(each => (
-                <ul>
-                  <li style={{color: each.color}}>{each.label} <span style={{backgroundColor: each.color, color: 'white', padding: 5, borderRadius: 10}}>{(each.value / this.state.totalExpense * 100).toFixed(2)}%</span> </li>
-                </ul>
-              ))}
+                <h1>Expense Report from {this.state.chosenSubordinate}</h1>
+                <Pie data={this.state.chartData} width="600" height="250" />
+                <h3>Category</h3>
+                {this.state.chartData.map(each => (
+                  <ul>
+                    <li style={{color: each.color}}>{each.label} <span style={{backgroundColor: each.color, color: 'white', padding: 5, borderRadius: 10}}>{(each.value / this.state.totalExpense * 100).toFixed(2)}%</span> </li>
+                  </ul>
+                ))}
               </div>
             }
             <TableTrx

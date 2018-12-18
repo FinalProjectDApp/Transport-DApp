@@ -75,7 +75,7 @@ class Home extends Component {
             }
           });
         }
-        this.setState({ transactions: arr })
+        this.setState({ transactions: arr, grandTotal: this.setGrandTotal(arr) })
       }).catch(err => {
         console.log(err)
       })
