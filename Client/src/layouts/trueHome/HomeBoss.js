@@ -56,10 +56,39 @@ class Home extends Component {
   componentDidMount = () => {
     // TODO: Refactor with promise chain
     this.cekLogin()
-    this.getTransactions()
+    this.getAllTransactions()
+  }
+
+  getAllTransactions = () => {
+    this.web3.eth.getCoinbase((err, account) => {
+      this.setState({ account })
+      this.expense.deployed().then((instance) => {
+        this.expenseInstance = instance
+        this.watchEvents()
+
+        return this.expenseInstance.totalTransactions()
+      }).then(async (totalTransaction) => {
+        this.setState({transactionsAmount: totalTransaction.c[0]})
+        return { user: await this.expenseInstance.owner(), totalTransaction: totalTransaction }
+      }).then(({ user, totalTransaction }) => {
+        let arr = [];
+        let arrSubordinates = [];
+        for (let i = 0; i <= totalTransaction; i++) {
+          this.expenseInstance.transactions(i).then( (transaction)=> {
+            let owner = transaction[6]
+            if (!arrSubordinates.includes(owner)) arrSubordinates.push(owner)
+            arr.push(transaction)
+          });
+        }
+        this.setState({ transactions: arr, subordinates: arrSubordinates })
+      }).catch(err => {
+        console.log(err)
+      })
+    })
   }
 
   getTransactions=(ownerSelected)=>{
+    this.setState({ totalExpense: 0 })
     this.web3.eth.getCoinbase((err, account) => {
       this.setState({ account })
       this.expense.deployed().then((instance) => {
@@ -73,11 +102,9 @@ class Home extends Component {
       }).then(({ user, totalTransaction }) => {
         let arr = [];
         let chartData = [];
-        let arrSubordinates = [];
         for (let i = 0; i <= totalTransaction; i++) {
           this.expenseInstance.transactions(i).then( (transaction)=> {
             let owner = transaction[6]
-            if (!arrSubordinates.includes(owner)) arrSubordinates.push(owner)
             console.log('trx:', transaction, ' cek user--:', user, '===', owner, user === owner)
             if (ownerSelected === owner) {
               this.setState({chosenSubordinate: ownerSelected})
@@ -138,10 +165,11 @@ class Home extends Component {
                 })
               }
               this.setState(prevState => ({ totalExpense: prevState.totalExpense + transaction[4].c[0] }))
+              console.log(this.state.totalExpense)
             }
           });
         }
-        this.setState({ transactions: arr, subordinates: arrSubordinates, chartData })
+        this.setState({ transactions: arr, chartData })
       }).catch(err => {
         console.log(err)
       })
@@ -199,9 +227,8 @@ class Home extends Component {
   }
 
   handleForm=(val)=>{
-    if(val != 'Choose one') {
+    if (val != 'Choose one') {
       this.getTransactions(val)
-      this.setState({choosed: true})
     }
   }
 
@@ -227,7 +254,7 @@ class Home extends Component {
             </div>
             {/* React-Chart JS */}
             {
-              this.state.choosed && 
+              this.state.chosenSubordinate && 
               <div style={{display: 'flex', flexDirection: "column", justifyContent: 'center', alignItems: 'center', padding: 10}}>
                 <h1>Expense Report from {this.state.chosenSubordinate}</h1>
                 <Pie data={this.state.chartData} width="600" height="250" />
