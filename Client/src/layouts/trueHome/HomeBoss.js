@@ -3,12 +3,13 @@ import { connect } from 'react-redux'
 import Navbar from '../../components/navbar'
 import { Pie, Bar } from 'react-chartjs-2'
 import TableTrx from '../../components/tableTrx'
-// import Header from '../../components/header'
 import firebase from '../../firebase'
 
 import Web3 from 'web3'
 import TruffleContract from 'truffle-contract'
 import Expense from '../../../build/contracts/Expense.json'
+
+
 
 class Home extends Component {
   constructor(props) {
@@ -28,7 +29,8 @@ class Home extends Component {
       chartData: [],
       shouldRedraw: false,
       totalExpense: 0,
-      chosenSubordinate: ''
+      chosenSubordinate: '',
+      homeBoss: false
     }
     // this.web3 = new Web3(Web3.givenProvider || "ws://localhost:7545");
     if (typeof web3 == 'undefined') {
@@ -57,7 +59,7 @@ class Home extends Component {
   componentDidMount = () => {
     // TODO: Refactor with promise chain
     this.cekLogin()
-    this.setState({ shouldRedraw: true })
+    this.setState({ shouldRedraw: true, homeBoss: true })
     this.getAllTransactions()
     this.setState({ shouldRedraw: false })
   }
@@ -138,14 +140,14 @@ class Home extends Component {
         };
         for (let i = 0; i <= totalTransaction; i++) {
           this.expenseInstance.transactions(i).then( async (transaction)=> {
-            // let locationStr = await this.expenseInstance.locations(i);
+            let locationStr = await this.expenseInstance.locations(i);
             // console.log('ini location str', locationStr)
-            // let location = JSON.parse(locationStr);
+            let location = JSON.parse(locationStr);
             let owner = transaction[6]
             console.log('trx:', transaction, ' cek user--:', user, '===', owner, user === owner)
             if (ownerSelected === owner) {
               this.setState({chosenSubordinate: ownerSelected})
-              // transaction.push(location)
+              transaction.push(location)
               arr.push(transaction)
               let barColor = {};
               switch (transaction[1]) {
@@ -204,6 +206,7 @@ class Home extends Component {
               this.setState(prevState => ({ totalExpense: prevState.totalExpense + transaction[4].c[0] }))
               console.log(chartData)
             }
+            this.setGrandTotal(arr)
         })
       }
       this.setState({ transactions: arr, chartData, shouldRedraw: true })

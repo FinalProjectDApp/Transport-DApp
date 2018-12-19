@@ -67,6 +67,7 @@ class home extends Component {
             this.setState({loading: true}, ()=>{
                 this.uploadBill(val)
             })
+            this.props.getLocation()
         } else if (form === 'transactionId') {
             this.setState({
                 [form]:val
