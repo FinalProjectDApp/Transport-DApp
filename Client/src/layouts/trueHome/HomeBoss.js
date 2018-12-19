@@ -80,9 +80,8 @@ class Home extends Component {
           labels: [],
           datasets: [
             {
-              label: "Expense Report",
-              backgroundColor: "rgba(220,220,220,0.5)",
-              hoverBackgroundColor: "rgba(220,220,220,0.75)",
+              backgroundColor: [],
+              hoverBackgroundColor: "rgba(220, 220, 220, 1)",
               data: []
             }
           ]
@@ -95,6 +94,7 @@ class Home extends Component {
             if (index === -1) {
               chartData.datasets[0].data.push(transaction[4].c[0])
               chartData.labels.push(transaction[6])
+              chartData.datasets[0].backgroundColor.push(this.getRandomColor())
             } else  {
               chartData.datasets[0].data[index] += transaction[4].c[0]
             }
@@ -128,7 +128,6 @@ class Home extends Component {
           labels: [],
           datasets: [
             {
-              label: "Expense Report",
               backgroundColor: [],
               hoverBackgroundColor: [],
               data: []
@@ -137,14 +136,14 @@ class Home extends Component {
         };
         for (let i = 0; i <= totalTransaction; i++) {
           this.expenseInstance.transactions(i).then( async (transaction)=> {
-            let locationStr = await this.expenseInstance.locations(i);
-            let location = JSON.parse(locationStr);
-            console.log('ini location str', locationStr)
+            // let locationStr = await this.expenseInstance.locations(i);
+            // console.log('ini location str', locationStr)
+            // let location = JSON.parse(locationStr);
             let owner = transaction[6]
             console.log('trx:', transaction, ' cek user--:', user, '===', owner, user === owner)
             if (ownerSelected === owner) {
               this.setState({chosenSubordinate: ownerSelected})
-              transaction.push(location)
+              // transaction.push(location)
               arr.push(transaction)
               let barColor = {};
               switch (transaction[1]) {
@@ -213,6 +212,15 @@ class Home extends Component {
     })
   }
 
+  getRandomColor() {
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+
   watchEvents() {
     // TODO: trigger event when transaction is counted, not when component renders
     this.expenseInstance.votedEvent({}, {
@@ -269,7 +277,7 @@ class Home extends Component {
 
   render() {
     if(this.state.transactions.length>0 && this.state.transactions.length === this.state.transactionsAmount && !this.state.grandTotal) this.setGrandTotal(this.state.transactions)
-    let barOption = {maintainAspectRatio: false, scales: { yAxes: [{ ticks: { beginAtZero: true }}]}}
+    let barOption = {legend: { display: false }, maintainAspectRatio: false, scales: { yAxes: [{ ticks: { beginAtZero: true }}]}}
     return (
       <div>
         <Navbar></Navbar>
