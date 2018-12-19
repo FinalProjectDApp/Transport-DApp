@@ -24,6 +24,7 @@ class Home extends Component {
       voting: false,
       choosed: false,
       email: '',
+      location: '', // add new ----------------
       chartData: [],
       shouldRedraw: false,
       totalExpense: 0,
@@ -72,7 +73,7 @@ class Home extends Component {
       }).then(async (totalTransaction) => {
         this.setState({transactionsAmount: totalTransaction.c[0]})
         return { user: await this.expenseInstance.owner(), totalTransaction: totalTransaction }
-      }).then(({ user, totalTransaction }) => {
+      }).then(async ({ user, totalTransaction }) => {
         let arr = [];
         let arrSubordinates = [];
         let chartData = {
@@ -135,11 +136,15 @@ class Home extends Component {
           ]
         };
         for (let i = 0; i <= totalTransaction; i++) {
-          this.expenseInstance.transactions(i).then( (transaction)=> {
+          this.expenseInstance.transactions(i).then( async (transaction)=> {
+            let locationStr = await this.expenseInstance.locations(i);
+            let location = JSON.parse(locationStr);
+            console.log('ini location str', locationStr)
             let owner = transaction[6]
             console.log('trx:', transaction, ' cek user--:', user, '===', owner, user === owner)
             if (ownerSelected === owner) {
               this.setState({chosenSubordinate: ownerSelected})
+              transaction.push(location)
               arr.push(transaction)
               let barColor = {};
               switch (transaction[1]) {
@@ -198,12 +203,10 @@ class Home extends Component {
               this.setState(prevState => ({ totalExpense: prevState.totalExpense + transaction[4].c[0] }))
               console.log(chartData)
             }
-          });
-        }
-        console.log('iniinini', this.state.shouldRedraw)
-        this.setState({ transactions: arr, chartData, shouldRedraw: true })
-        this.setState({ shouldRedraw: false })
-        console.log('iniinini', this.state.shouldRedraw)
+        })
+      }
+      this.setState({ transactions: arr, chartData, shouldRedraw: true })
+      this.setState({ shouldRedraw: false })
       }).catch(err => {
         console.log(err)
       })
@@ -236,6 +239,7 @@ class Home extends Component {
         console.error(err);
       });
   }
+
 
   setGrandTotal = (arr)=>{
     console.log('jumlah transaksi:', this.state.transactionsAmount)

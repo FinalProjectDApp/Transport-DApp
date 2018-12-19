@@ -26,11 +26,14 @@ describe('Transaction', () => {
         idUser = result._id
         emailUser = result.email
         Trx.create({
+            transactionId: '66671293',
             category: 'Food',
             description: 'lorem Ipsum',
             bill: 'http://image.com',
             total: '200000',
             status: 'ok',
+            email: 'a@mail.com',
+            location: '{lat:101.01, long:-102.20}',
             user: idUser
         })
         .then(result2=>{            
@@ -119,11 +122,14 @@ describe('Transaction', () => {
 
     it(`Create a new Transaction`, (done)=> {    
         let newTrx = {
-            category: 'Drink',
+            transactionId: '66671293',
+            category: 'Food',
             description: 'lorem Ipsum',
             bill: 'http://image.com',
             total: '200000',
-            status: 'ok'
+            status: 'ok',
+            email: 'a@mail.com',
+            location: '{lat:101.01, long:-102.20}',
         }
         chai
         .request(app)
@@ -131,6 +137,7 @@ describe('Transaction', () => {
         .send(newTrx)
         .set('email', emailUser)
         .end((err, res) => {
+            console.log('result:', res.body)
             res.should.have.status(201)
             res.body.should.be.a('object')
             res.body.should.have.property('message')

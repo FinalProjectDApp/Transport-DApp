@@ -56,12 +56,14 @@ class table extends Component {
                 <Table className="ui celled table">
                     <TableHead>
                         <TableRow>
+                            <TableCell style={styles.customTableCell}>Transaction ID</TableCell>
                             <TableCell style={styles.customTableCell}>Created At</TableCell>
                             <TableCell style={styles.customTableCell}>Category</TableCell>
                             <TableCell style={styles.customTableCell}>Description</TableCell>
                             <TableCell style={styles.customTableCell}>Bill Image</TableCell>
                             <TableCell style={styles.customTableCell} numeric>Total</TableCell>
                             <TableCell style={styles.customTableCell}>Status</TableCell>
+                            <TableCell style={styles.customTableCell}>Location</TableCell>
                         </TableRow>
                     </TableHead>
                     {
@@ -70,6 +72,7 @@ class table extends Component {
                             {this.props.transactions.map((el, i)=>{
                                 return (
                                     <TableRow key={i}>
+                                        <TableCell>{el[0].c[0]}</TableCell>
                                         <TableCell>{new Date(el[7]).toLocaleString()}</TableCell>
                                         <TableCell>{el[1]}</TableCell>
                                         <TableCell>{el[2]}</TableCell>
@@ -78,7 +81,14 @@ class table extends Component {
                                         </TableCell>
                                         {(el[4].s == -1) && <TableCell numeric>{this.formatMoney(Number(el[4].c[0]) * -1)}</TableCell>}
                                         {(el[4].s == 1) && <TableCell numeric>{this.formatMoney(Number(el[4].c[0]))}</TableCell>}
-                                        <TableCell>{el[5]}</TableCell>
+                                        {/* status */}
+                                        {el[5] ==='OK' && <TableCell style={{color:'green'}}>{el[5]}</TableCell>}
+                                        {el[5] ==='Different' && <TableCell style={{color:'red'}}>{el[5]}</TableCell>}
+                                        {el[5] ==='Adjusted' && <TableCell style={{color:'green'}}>{el[5]}</TableCell>}
+                                        {el[5] ==='Bill/Invoice does not contain total amount!' && <TableCell style={{color:'red'}}>{el[5]}</TableCell>}
+                                        {el[5] ==='' && <TableCell style={{color:'red'}}>No Transaction Data!</TableCell>}
+                                        {/* Location... */}
+                                        {el[8] && <TableCell>{JSON.stringify(el[8])}</TableCell>}
                                     </TableRow>
                                 )
                             })}
