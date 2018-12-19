@@ -59,7 +59,6 @@ class Home extends Component {
     this.cekLogin()
     this.setState({ shouldRedraw: true })
     this.getAllTransactions()
-    this.setState({ shouldRedraw: false })
   }
 
   getAllTransactions = () => {
@@ -102,8 +101,9 @@ class Home extends Component {
             console.log(chartData)
           });
         }
-        this.setState({ transactions: arr, subordinates: arrSubordinates, chartData })
-        this.setState({ shouldRedraw: false })
+        this.setState({ transactions: arr, subordinates: arrSubordinates, chartData }, () => {
+          this.setState({ shouldRedraw: false })
+        })
       }).catch(err => {
         console.log(err)
       })
@@ -204,8 +204,9 @@ class Home extends Component {
             }
         })
       }
-      this.setState({ transactions: arr, chartData, shouldRedraw: true })
-      this.setState({ shouldRedraw: false })
+      this.setState({ transactions: arr, chartData, shouldRedraw: true }, () => {
+        this.setState({ shouldRedraw: false })
+      })
       }).catch(err => {
         console.log(err)
       })
@@ -266,11 +267,11 @@ class Home extends Component {
   }
 
   handleForm=(val)=>{
+    this.setState({ shouldRedraw: true })
     if (val != '') {
       this.getTransactions(val)
     } else {
       this.setState({ chosenSubordinate: '' })
-      this.setState({ shouldRedraw: true })
       this.getAllTransactions()
     }
   }

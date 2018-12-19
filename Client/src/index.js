@@ -25,7 +25,7 @@ const drizzle = new Drizzle(drizzleOptions, drizzleStore);
 
 ReactDOM.render((
   <Fragment>
-     <div
+     {/* <div
           style={{
             backgroundColor: 'rgb(250, 250, 250)',
             padding: 0,
@@ -133,7 +133,7 @@ ReactDOM.render((
               "retina_detect": true
             }}
           />
-        </div>
+        </div> */}
     <DrizzleProvider options={drizzleOptions}>
       <LoadingContainer>
         <Provider store={store} >
