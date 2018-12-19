@@ -52,6 +52,7 @@
     "react-chartjs-2": "^2.7.4",
     "react-dev-utils": "^5.0.1",
     "react-dom": "^16.4.1",
+    "react-particles-js": "^2.4.2",
     "react-redux": "^5.0.7",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
