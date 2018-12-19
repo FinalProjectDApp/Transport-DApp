@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 // import { AccounTableCellata, ContracTableCellata, ContractForm } from 'drizzle-react-components'
 import { Table, Paper, TableHead, TableBody, TableRow, TableCell } from '@material-ui/core'
+import GoogleMap from "../components/googleMap";
 
 const styles = {
     customTableCell: {
@@ -13,6 +14,7 @@ const styles = {
 class table extends Component {
     state = {
        showImage: false,
+       showMap: false,
        index: 0,
        budget: 1000000
     }
@@ -50,6 +52,20 @@ class table extends Component {
             })
         }
     }
+
+    handleClickMap=(i)=>{
+        if(this.state.showMap) {
+            this.setState({
+                showMap: false,
+                index: 0
+            })
+        } else {
+            this.setState({
+                showMap: true,
+                index: i
+            })
+        }
+    }
     render() {
         return (
             <Paper className="ui container" style={{marginTop: 20, marginBottom: 50}}>
@@ -63,7 +79,7 @@ class table extends Component {
                             <TableCell style={styles.customTableCell}>Bill Image</TableCell>
                             <TableCell style={styles.customTableCell} numeric>Total</TableCell>
                             <TableCell style={styles.customTableCell}>Status</TableCell>
-                            <TableCell style={styles.customTableCell}>Location</TableCell>
+                            {this.props.transactions.length>0 && this.props.transactions[0][8] && <TableCell style={styles.customTableCell}>Location</TableCell>}
                         </TableRow>
                     </TableHead>
                     {
@@ -88,7 +104,18 @@ class table extends Component {
                                         {el[5] ==='Bill/Invoice does not contain total amount!' && <TableCell style={{color:'red'}}>{el[5]}</TableCell>}
                                         {el[5] ==='' && <TableCell style={{color:'red'}}>No Transaction Data!</TableCell>}
                                         {/* Location... */}
-                                        {el[8] && <TableCell>{JSON.stringify(el[8])}</TableCell>}
+                                        {/* {el[8] && <TableCell>{JSON.stringify(el[8])}</TableCell>} */}
+                                        {el[8] && <TableCell><span onClick={()=>this.handleClickMap(i) } style={{color: 'blue', cursor:'pointer'}}>Show/Hide Location</span><br/>
+                                            {this.state.showMap && i == this.state.index && 
+                                            <GoogleMap
+                                                lat={el[8].lat}
+                                                long={el[8].long}
+                                                googleMapURL={`https://maps.googleapis.com/maps/api/js?key=AIzaSyD70YjbFMEBuhjcTR8_kOLHLktQk3X6AeM&v=3.exp&libraries=geometry,drawing,places`}
+                                                loadingElement={<div style={{ height: `100%` }} />}
+                                                containerElement={<div style={{ height: `300px`, width: `300px` }} />}
+                                                mapElement={<div style={{ height: `100%` }} />}
+                                            />}
+                                        </TableCell>}
                                     </TableRow>
                                 )
                             })}

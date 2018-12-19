@@ -101,7 +101,7 @@ class Home extends Component {
     let id = await this.getId()
     let date = String(new Date().toLocaleString())
     let location = this.state.location
-    console.log('total in add trx:', Number(total))
+    console.log('location in add trx:', location)
     if (!imageBill) imageBill = 'https://www.firstaidacademy.co.uk/app/themes/ibex-theme/img/no-img.gif';
     this.expenseInstance.addTransaction(category, description, imageBill, Number(total), status, email, date, Number(id), location, { from: this.state.account })
       .then((result) => {
@@ -176,7 +176,8 @@ class Home extends Component {
               transactions={this.state.transactions}
               hasVoted={this.state.hasVoted}
               castVote={this.castVote}
-              addTransaction={this.addTransaction}></FormInput>
+              addTransaction={this.addTransaction}
+              getLocation={this.getLocation}></FormInput>
             <TableTrx
               account={this.state.account}
               transactions={this.state.transactions}
