@@ -59,6 +59,7 @@ class Home extends Component {
     this.cekLogin()
     this.setState({ shouldRedraw: true })
     this.getAllTransactions()
+    this.setState({ shouldRedraw: false })
   }
 
   getAllTransactions = () => {
@@ -101,9 +102,10 @@ class Home extends Component {
             console.log(chartData)
           });
         }
-        this.setState({ transactions: arr, subordinates: arrSubordinates, chartData }, () => {
+        this.setState({ transactions: arr, subordinates: arrSubordinates, chartData })
+        setTimeout(() => {
           this.setState({ shouldRedraw: false })
-        })
+        }, 1000)
       }).catch(err => {
         console.log(err)
       })
@@ -204,9 +206,10 @@ class Home extends Component {
             }
         })
       }
-      this.setState({ transactions: arr, chartData, shouldRedraw: true }, () => {
+      this.setState({ transactions: arr, chartData, shouldRedraw: true })
+      setTimeout(() =>{
         this.setState({ shouldRedraw: false })
-      })
+      }, 1000)
       }).catch(err => {
         console.log(err)
       })
@@ -267,11 +270,11 @@ class Home extends Component {
   }
 
   handleForm=(val)=>{
-    this.setState({ shouldRedraw: true })
     if (val != '') {
       this.getTransactions(val)
     } else {
       this.setState({ chosenSubordinate: '' })
+      this.setState({ shouldRedraw: true })
       this.getAllTransactions()
     }
   }
@@ -303,7 +306,7 @@ class Home extends Component {
                 // Pie Chart
                 <div style={{display: 'flex', flexDirection: "column", justifyContent: 'center', alignItems: 'center', padding: 10}}>
                   <h1>Expense Report from {this.state.chosenSubordinate}</h1>
-                  <Pie data={this.state.chartData} height={100} redraw={this.state.shouldRedraw} />
+                  <Pie data={this.state.chartData} height={70} redraw={this.state.shouldRedraw} />
                 </div> 
                 :
                 // Bar Chart
