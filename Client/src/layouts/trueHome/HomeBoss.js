@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Navbar from '../../components/navbar'
-import { Pie } from 'react-chartjs'
+import { Pie, Bar } from 'react-chartjs-2'
 import TableTrx from '../../components/tableTrx'
-import Header from '../../components/header'
+// import Header from '../../components/header'
 import firebase from '../../firebase'
 
 import Web3 from 'web3'
@@ -25,6 +25,7 @@ class Home extends Component {
       choosed: false,
       email: '',
       chartData: [],
+      shouldRedraw: false,
       totalExpense: 0,
       chosenSubordinate: ''
     }
@@ -40,7 +41,6 @@ class Home extends Component {
     this.expense = TruffleContract(Expense)
     this.expense.setProvider(this.web3Provider)
 
-    this.castVote = this.castVote.bind(this)
     this.watchEvents = this.watchEvents.bind(this)
   }
 
@@ -56,7 +56,9 @@ class Home extends Component {
   componentDidMount = () => {
     // TODO: Refactor with promise chain
     this.cekLogin()
+    this.setState({ shouldRedraw: true })
     this.getAllTransactions()
+    this.setState({ shouldRedraw: false })
   }
 
   getAllTransactions = () => {
@@ -73,14 +75,34 @@ class Home extends Component {
       }).then(({ user, totalTransaction }) => {
         let arr = [];
         let arrSubordinates = [];
+        let chartData = {
+          labels: [],
+          datasets: [
+            {
+              label: "Expense Report",
+              backgroundColor: "rgba(220,220,220,0.5)",
+              hoverBackgroundColor: "rgba(220,220,220,0.75)",
+              data: []
+            }
+          ]
+        };
         for (let i = 0; i <= totalTransaction; i++) {
           this.expenseInstance.transactions(i).then( (transaction)=> {
             let owner = transaction[6]
             if (!arrSubordinates.includes(owner)) arrSubordinates.push(owner)
+            let index = chartData.labels.findIndex(each => each  === owner)
+            if (index === -1) {
+              chartData.datasets[0].data.push(transaction[4].c[0])
+              chartData.labels.push(transaction[6])
+            } else  {
+              chartData.datasets[0].data[index] += transaction[4].c[0]
+            }
             arr.push(transaction)
+            console.log(chartData)
           });
         }
-        this.setState({ transactions: arr, subordinates: arrSubordinates })
+        this.setState({ transactions: arr, subordinates: arrSubordinates, chartData })
+        this.setState({ shouldRedraw: false })
       }).catch(err => {
         console.log(err)
       })
@@ -101,7 +123,17 @@ class Home extends Component {
         return { user: await this.expenseInstance.owner(), totalTransaction: totalTransaction }
       }).then(({ user, totalTransaction }) => {
         let arr = [];
-        let chartData = [];
+        let chartData = {
+          labels: [],
+          datasets: [
+            {
+              label: "Expense Report",
+              backgroundColor: [],
+              hoverBackgroundColor: [],
+              data: []
+            }
+          ]
+        };
         for (let i = 0; i <= totalTransaction; i++) {
           this.expenseInstance.transactions(i).then( (transaction)=> {
             let owner = transaction[6]
@@ -109,67 +141,69 @@ class Home extends Component {
             if (ownerSelected === owner) {
               this.setState({chosenSubordinate: ownerSelected})
               arr.push(transaction)
-              let obj = {};
+              let barColor = {};
               switch (transaction[1]) {
                 case 'Food & Beverage':
-                  obj = {
-                    color:"#F7464A", //red
-                    highlight: "#FF5A5E"
+                  barColor = {
+                    color: "rgba(247, 70, 74, 0.5)", //red
+                    highlight: "rgba(255, 90, 94, 0.8)"
                   }
                   break;
                 case 'Transportation':
-                  obj = {
-                    color: "#46BFBD",//turqois
-                    highlight: "#5AD3D1"
+                  barColor = {
+                    color: "rgba(70, 191, 189, 0.5)",//turqois
+                    highlight: "rgba(90, 211, 209, 0.8)"
                   }
                   break;
                 case 'Accomodation':
-                  obj = {
-                    color: "#33cc33",//green
-                    highlight: "#2eb82e"
+                  barColor = {
+                    color: "rgba(51, 204, 51, 0.5)",//green
+                    highlight: "rgba(46, 184, 46, 0.8)"
                   }
                   break;
                 case 'Entertainment':
-                  obj = {
-                    color: "#eeee00",//yellow
-                    highlight: "#bbbb00"
+                  barColor = {
+                    color: "rgba(238, 238, 0, 0.5)",//yellow
+                    highlight: "rgba(187, 187, 0, 0.8)"
                   }
                   break;
                 case 'Misc.':
-                  obj = {
-                    color: "#631919",//brown
-                    highlight: "#421010"
+                  barColor = {
+                    color: "rgba(99, 25, 25, 0.5)",//brown
+                    highlight: "rgba(66, 16, 16, 0.8)"
                   }
                   break;
                 case 'Transaction Adjustment':
-                  obj = {
-                    color: "#e57e00",//orange
-                    highlight: "#b26200"
+                  barColor = {
+                    color: "rgba(229, 126, 0, 0.5)",//orange
+                    highlight: "rgba(178, 98, 0, 0.8)"
                   }
                   break;
                 case 'Unused Budget':
-                  obj = {
-                    color: "#333333",//grey
-                    highlight: "#111111"
+                  barColor = {
+                    color: "rgba(51, 51, 51, 0.5)",//grey
+                    highlight: "rgba(17, 17, 17, 0.8)"
                   }
                   break;
               }
-              let index = chartData.findIndex(each => each.label === transaction[1])
-              if (index !== -1) {
-                chartData[index].value += transaction[4].c[0]
-              } else {
-                chartData.push({
-                  value: transaction[4].c[0],
-                  label: transaction[1],
-                  ...obj
-                })
+              let index = chartData.labels.findIndex(each => each  === transaction[1])
+              if (index === -1) {
+                chartData.datasets[0].data.push(transaction[4].c[0])
+                chartData.labels.push(transaction[1])
+                chartData.datasets[0].backgroundColor.push(barColor.color)
+                chartData.datasets[0].hoverBackgroundColor.push(barColor.highlight)
+              } else  {
+                chartData.datasets[0].data[index] += transaction[4].c[0]
               }
               this.setState(prevState => ({ totalExpense: prevState.totalExpense + transaction[4].c[0] }))
-              console.log(this.state.totalExpense)
+              console.log(chartData)
             }
           });
         }
-        this.setState({ transactions: arr, chartData })
+        console.log('iniinini', this.state.shouldRedraw)
+        this.setState({ transactions: arr, chartData, shouldRedraw: true })
+        this.setState({ shouldRedraw: false })
+        console.log('iniinini', this.state.shouldRedraw)
       }).catch(err => {
         console.log(err)
       })
@@ -219,21 +253,19 @@ class Home extends Component {
     this.setState({grandTotal: counter})
   }
 
-  castVote(candidateId) {
-    this.setState({ voting: true })
-    this.expenseInstance.vote(candidateId, { from: this.state.account }).then((result) =>
-      this.setState({ hasVoted: true })
-    )
-  }
-
   handleForm=(val)=>{
-    if (val != 'Choose one') {
+    if (val != '') {
       this.getTransactions(val)
+    } else {
+      this.setState({ chosenSubordinate: '' })
+      this.setState({ shouldRedraw: true })
+      this.getAllTransactions()
     }
   }
 
   render() {
     if(this.state.transactions.length>0 && this.state.transactions.length === this.state.transactionsAmount && !this.state.grandTotal) this.setGrandTotal(this.state.transactions)
+    let barOption = {maintainAspectRatio: false, scales: { yAxes: [{ ticks: { beginAtZero: true }}]}}
     return (
       <div>
         <Navbar></Navbar>
@@ -243,7 +275,7 @@ class Home extends Component {
               <div className="ui field">
                 <label>Select your subordinate </label>
                 <select className="ui search dropdown" onChange={(e)=>this.handleForm(e.target.value)}>
-                    <option value="Choose one">Choose one</option>
+                    <option value="">All</option>
                     {this.state.subordinates.map((el, i)=>{
                       return (
                         <option value={el} key={i}>{el}</option>
@@ -254,17 +286,18 @@ class Home extends Component {
             </div>
             {/* React-Chart JS */}
             {
-              this.state.chosenSubordinate && 
-              <div style={{display: 'flex', flexDirection: "column", justifyContent: 'center', alignItems: 'center', padding: 10}}>
-                <h1>Expense Report from {this.state.chosenSubordinate}</h1>
-                <Pie data={this.state.chartData} width="600" height="250" />
-                <h3>Category</h3>
-                {this.state.chartData.map(each => (
-                  <ul>
-                    <li style={{color: each.color}}>{each.label} <span style={{backgroundColor: each.color, color: 'white', padding: 5, borderRadius: 10}}>{(each.value / this.state.totalExpense * 100).toFixed(2)}%</span> </li>
-                  </ul>
-                ))}
-              </div>
+              this.state.chosenSubordinate ? 
+                // Pie Chart
+                <div style={{display: 'flex', flexDirection: "column", justifyContent: 'center', alignItems: 'center', padding: 10}}>
+                  <h1>Expense Report from {this.state.chosenSubordinate}</h1>
+                  <Pie data={this.state.chartData} height={100} redraw={this.state.shouldRedraw} />
+                </div> 
+                :
+                // Bar Chart
+                <div style={{display: 'flex', flexDirection: "column", justifyContent: 'center', alignItems: 'center', padding: 10}}>
+                  <h1>Expense Report</h1>
+                  <Bar data={this.state.chartData} options={barOption} redraw={this.state.shouldRedraw} />
+                </div>
             }
             <TableTrx
               account={this.state.account}
