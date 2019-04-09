@@ -1,0 +1,3 @@
+JWT_KEY=livecode
+DB_DEVELOPMENT=mongodb://localhost:27017/lc2w8
+DB_TEST=mongodb://localhost:27017/lc2w8test
