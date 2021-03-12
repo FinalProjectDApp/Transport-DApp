@@ -50,7 +50,7 @@
     "react": "^16.4.1",
     "react-chartjs": "^1.2.0",
     "react-chartjs-2": "^2.7.4",
-    "react-dev-utils": "^5.0.1",
+    "react-dev-utils": "^11.0.4",
     "react-dom": "^16.4.1",
     "react-google-maps": "^9.4.5",
     "react-particles-js": "^2.4.2",
