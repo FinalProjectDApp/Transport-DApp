@@ -20,7 +20,7 @@
     "mocha": "^5.2.0",
     "mongoose": "^5.3.13",
     "nodemon": "^1.18.6",
-    "redis": "^2.8.0"
+    "redis": "^3.1.1"
   },
   "devDependencies": {
     "nyc": "^13.1.0"
