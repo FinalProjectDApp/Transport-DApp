@@ -8,7 +8,7 @@
     "test": "NODE_ENV=test nyc ./node_modules/mocha/bin/mocha --exit"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
     "chai": "^4.2.0",
     "chai-http": "^4.2.0",
